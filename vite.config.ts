@@ -15,9 +15,15 @@ export default defineConfig({
         description: 'Sync Video RTC',
         manifest_version: 3,
         background: {
-          service_worker: 'src/worker.ts',
+          service_worker: 'src/app/action/infrastructure/Worker.ts',
           type: 'module'
         },
+        content_scripts: [
+          {
+            matches: ['*://*/*'],
+            js: ['src/app/menu/Main.ts']
+          }
+        ],
         action: {
           default_title: 'Sync Video RTC'
         },
@@ -30,15 +36,4 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  build: {
-    rollupOptions: {
-      input: {
-        main: fileURLToPath(new URL('./src/main.ts', import.meta.url))
-      },
-      output: {
-        entryFileNames: '[name].js',
-        format: 'es'
-      }
-    }
-  }
 })
