@@ -40,8 +40,9 @@ const handleClick = () => {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .sync-video {
+  @apply bg-gray-100/5;
   font-size: 15px !important;
   font-family: 'Roboto', sans-serif !important;
   color: #000 !important;
@@ -51,7 +52,6 @@ const handleClick = () => {
   max-width: 100%;
   border: 1px solid white;
   border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.635);
   backdrop-filter: blur(5px) saturate(200%) contrast(45%) brightness(130%);
   top: 50%;
   left: 50%;

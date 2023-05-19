@@ -1,11 +1,11 @@
 import { consola } from 'consola'
 import { ref, type Ref } from 'vue'
 import type SignalingChannel from '../domain/SignalingChannel'
-import { type SignalingMessage } from '../domain/SignalingMessage'
-import { SignalingActions } from '../domain/SignalingActions'
 import NegotiationNeededHandler from './NegotiationNeededHandler'
 import DescriptionReceivedHandler from './DescriptionReceivedHandler'
 import CandidateReceivedHandler from './CandidateReceivedHandler'
+import { SignalingActions } from '../domain/SignalingActions'
+import type { SignalingMessage } from '../domain/SignalingMessage'
 
 export default class Peer {
   private peerConnection: RTCPeerConnection | null = null
@@ -55,13 +55,10 @@ export default class Peer {
 
   private onIceCandidateHandler = ({ candidate }: RTCPeerConnectionIceEvent) => {
     consola.info('Ice candidate received: ', candidate)
-    // wait 5 seconds to send the candidate
-    setTimeout(() => {
-      this.signalingChannel.postMessage({
-        action: SignalingActions.SEND_CANDIDATE,
-        candidate: JSON.parse(JSON.stringify(candidate))
-      })
-    }, 5000)
+    this.signalingChannel.postMessage({
+      action: SignalingActions.SEND_CANDIDATE,
+      candidate: JSON.parse(JSON.stringify(candidate))
+    })
   }
 
   private onSignalingEvent: (message: SignalingMessage) => void = async ({
