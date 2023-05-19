@@ -15,7 +15,7 @@ export default defineConfig({
         description: 'Sync Video RTC',
         manifest_version: 3,
         background: {
-          service_worker: 'src/app/action/infrastructure/Worker.ts',
+          service_worker: 'src/app/action/Worker.ts',
           type: 'module'
         },
         content_scripts: [
@@ -35,5 +35,5 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
-  },
+  }
 })
