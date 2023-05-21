@@ -1,5 +1,6 @@
 import App from './App.vue'
 import consola from 'consola'
+import '../../assets/main.scss'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -11,14 +12,14 @@ const app = createApp(App)
 app.use(createPinia())
 
 consola.info('Vue content script loaded')
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, sender) => {
   switch (request.action) {
     case INIT_UI_CONTEXT:
-      if (!document.querySelector('div#syncVideoRtc')) {
+      if (!document.querySelector('div#sync-video-rtc')) {
         try {
           consola.info(`Initiating menu UI: `, sender)
           const el: Element = document.createElement('div')
-          el.id = 'syncVideoRtc'
+          el.id = 'sync-video-rtc'
           document.body.appendChild(el)
           app.mount(el)
         } catch (error) {

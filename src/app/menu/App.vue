@@ -41,7 +41,7 @@ const handleClick = () => {
 </template>
 
 <style lang="scss" scoped>
-.sync-video {
+#sync-video-rtc .sync-video {
   @apply bg-gray-100/5;
   font-size: 15px !important;
   font-family: 'Roboto', sans-serif !important;
