@@ -1,11 +1,11 @@
 import consola from 'consola'
 import { SignalingActions } from '../domain/SignalingActions'
-import type Peer from './Peer'
+import type PeerConnection from './PeerConnection'
 import type SignalingChannel from '../domain/SignalingChannel'
 
 export default class NegotiationNeededHandler {
   static handle = async (
-    peer: Peer,
+    peer: PeerConnection,
     peerConnection: RTCPeerConnection,
     signalingChannel: SignalingChannel
   ) => {

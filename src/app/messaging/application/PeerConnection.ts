@@ -1,13 +1,13 @@
 import { consola } from 'consola'
-import { ref, type Ref } from 'vue'
+import { ref, watch, type Ref } from 'vue'
 import type SignalingChannel from '../domain/SignalingChannel'
 import NegotiationNeededHandler from './NegotiationNeededHandler'
 import DescriptionReceivedHandler from './DescriptionReceivedHandler'
-import CandidateReceivedHandler from './CandidateReceivedHandler'
+import IceCandidateHandler from './IceCandidateHandler'
 import { SignalingActions } from '../domain/SignalingActions'
 import type { SignalingMessage } from '../domain/SignalingMessage'
 
-export default class Peer {
+export default class PeerConnection {
   private peerConnection: RTCPeerConnection | null = null
   dataChannel: RTCDataChannel | null = null
 
@@ -21,21 +21,29 @@ export default class Peer {
 
   init() {
     consola.info('Initializing peer to peer connection')
-
     this.peerConnection = new RTCPeerConnection(this.config)
     this.dataChannel = this.peerConnection.createDataChannel('sync-video-rtc')
 
-    this.peerConnection.onconnectionstatechange = this.onConnectionStateChangeHandler
-    this.peerConnection.onsignalingstatechange = this.onSignalingStateChangeHandler
-
+    /* Setting up a callback function to handle the `onnegotiationneeded` event when a new negotiation is needed */
     this.peerConnection.onnegotiationneeded = () =>
       NegotiationNeededHandler.handle(this, this.peerConnection!, this.signalingChannel)
 
-    this.peerConnection.onicecandidate = this.onIceCandidateHandler
+    /* Setting up a callback function to handle the `onicecandidate` event when a new ICE candidate is available */
+    this.peerConnection.onicecandidate = ({ candidate }) =>
+      candidate && IceCandidateHandler.ready(candidate, this.signalingChannel)
 
+    /* Setting up reactive variables */
     this.connectionState.value = this.peerConnection.connectionState
-    this.signalingChannel.onMessage = this.onSignalingEvent
+    this.peerConnection.onconnectionstatechange = this.onConnectionStateChangeHandler
+    this.peerConnection.onsignalingstatechange = this.onSignalingStateChangeHandler
     this.peerConnection.ondatachannel = this.onDataChannelHandler
+
+    /* Setting up a callback function to be executed when a signaling message is received through the `signalingChannel` */
+    this.signalingChannel.onMessage = this.onSignalingEvent
+
+    watch(this.connectionState, (connectionState) => {
+      if (connectionState === 'connected') consola.success('Connected to peer')
+    })
   }
 
   private onDataChannelHandler = (ev: RTCDataChannelEvent) => {
@@ -51,14 +59,6 @@ export default class Peer {
 
   private onSignalingStateChangeHandler = () => {
     this.signalingState.value = this.peerConnection!.signalingState
-  }
-
-  private onIceCandidateHandler = ({ candidate }: RTCPeerConnectionIceEvent) => {
-    consola.info('Ice candidate received: ', candidate)
-    this.signalingChannel.postMessage({
-      action: SignalingActions.SEND_CANDIDATE,
-      candidate: JSON.parse(JSON.stringify(candidate))
-    })
   }
 
   private onSignalingEvent: (message: SignalingMessage) => void = async ({
@@ -80,7 +80,7 @@ export default class Peer {
             )
           break
         case SignalingActions.SEND_CANDIDATE:
-          if (candidate) CandidateReceivedHandler.handle(candidate, this.peerConnection!)
+          if (candidate) IceCandidateHandler.received(candidate, this.peerConnection!)
           break
       }
     } catch (error) {

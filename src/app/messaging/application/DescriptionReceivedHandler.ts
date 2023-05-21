@@ -1,11 +1,11 @@
 import consola from 'consola'
-import type Peer from './Peer'
+import type PeerConnection from './PeerConnection'
 import { SignalingActions } from '../domain/SignalingActions'
 import type SignalingChannel from '../domain/SignalingChannel'
 
 export default class DescriptionReceivedHandler {
   static handle = async (
-    peer: Peer,
+    peer: PeerConnection,
     description: RTCSessionDescriptionInit,
     peerConnection: RTCPeerConnection,
     signalingChannel: SignalingChannel
