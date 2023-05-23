@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { consola } from 'consola'
 import { ref } from 'vue'
-import PeerFactory from '../messaging/infrastructure/PeerFactory'
+import PeerFactory from '../messaging/infrastructure/peer/PeerFactory'
 
 consola.info('Vue Context Mounted successfully')
 const peerConexion = PeerFactory.createPeerFor('room-name')

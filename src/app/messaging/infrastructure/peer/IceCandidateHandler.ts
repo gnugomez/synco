@@ -1,6 +1,6 @@
 import consola from 'consola'
-import type SignalingChannel from '../domain/SignalingChannel'
-import { SignalingActions } from '../domain/SignalingActions'
+import type SignalingChannel from '../../domain/signaling/SignalingChannel'
+import { SignalingActions } from '../../domain/signaling/SignalingActions'
 
 export default class CandidateReceivedHandler {
   static received = async (candidate: RTCIceCandidateInit, peerConnection: RTCPeerConnection) => {

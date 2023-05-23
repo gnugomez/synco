@@ -1,6 +1,6 @@
 import { consola } from 'consola'
-import type { SignalingMessage } from '../domain/SignalingMessage'
-import type SignalingChannel from '../domain/SignalingChannel'
+import type { SignalingMessage } from '../../domain/signaling/SignalingMessage'
+import type SignalingChannel from '../../domain/signaling/SignalingChannel'
 
 export default class SignalingBroadcastChannel implements SignalingChannel {
   private broadcastChannel: BroadcastChannel

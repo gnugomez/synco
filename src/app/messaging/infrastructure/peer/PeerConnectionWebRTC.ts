@@ -1,13 +1,13 @@
 import { consola } from 'consola'
 import { ref, watch, type Ref } from 'vue'
-import type SignalingChannel from '../domain/SignalingChannel'
+import type SignalingChannel from '../../domain/signaling/SignalingChannel'
 import NegotiationNeededHandler from './NegotiationNeededHandler'
 import DescriptionReceivedHandler from './DescriptionReceivedHandler'
 import IceCandidateHandler from './IceCandidateHandler'
-import { SignalingActions } from '../domain/SignalingActions'
-import type { SignalingMessage } from '../domain/SignalingMessage'
+import { SignalingActions } from '../../domain/signaling/SignalingActions'
+import type { SignalingMessage } from '../../domain/signaling/SignalingMessage'
 
-export default class PeerConnection {
+export default class PeerConnectionWebRTC {
   private peerConnection: RTCPeerConnection | null = null
   dataChannel: RTCDataChannel | null = null
 
