@@ -4,28 +4,28 @@ import type PeerConnectionWebRTC from './PeerConnectionWebRTC'
 import type SignalingChannel from '../../domain/signaling/SignalingChannel'
 
 export default class NegotiationNeededHandler {
-  static handle = async (
-    peer: PeerConnectionWebRTC,
-    peerConnection: RTCPeerConnection,
-    signalingChannel: SignalingChannel
-  ) => {
-    consola.info('Negotiation needed fired')
+    static handle = async (
+        peer: PeerConnectionWebRTC,
+        peerConnection: RTCPeerConnection,
+        signalingChannel: SignalingChannel
+    ) => {
+        consola.info('Negotiation needed fired')
 
-    try {
-      peer.makingOffer.value = true
-      await peerConnection.setLocalDescription()
-      consola.info('Description offer ready to be sent: ', peerConnection.localDescription)
-      peer.localDescription.value = peerConnection.localDescription
+        try {
+            peer.makingOffer.next(true)
+            await peerConnection.setLocalDescription()
+            consola.info('Description offer ready to be sent: ', peerConnection.localDescription)
+            peer.localDescription.next(peerConnection.localDescription)
 
-      // Once the local description is ready, send it to the other peer through the signaling channel
-      signalingChannel.postMessage({
-        action: SignalingActions.SEND_DESCRIPTION,
-        description: JSON.parse(JSON.stringify(peerConnection.localDescription))
-      })
-    } catch (err) {
-      consola.error('There was an error during the negotiation: ', err)
-    } finally {
-      peer.makingOffer.value = false
+            // Once the local description is ready, send it to the other peer through the signaling channel
+            signalingChannel.postMessage({
+                action: SignalingActions.SEND_DESCRIPTION,
+                description: JSON.parse(JSON.stringify(peerConnection.localDescription))
+            })
+        } catch (err) {
+            consola.error('There was an error during the negotiation: ', err)
+        } finally {
+            peer.makingOffer.next(false)
+        }
     }
-  }
 }
