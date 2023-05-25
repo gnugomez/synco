@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { consola } from 'consola'
-import PeerFactory from '../messaging/infrastructure/peer/PeerFactory'
 import { useObservable } from '@vueuse/rxjs'
+import Context from '../messaging/infrastructure/context/Context'
+import ConnectionComponent from './Connection.vue'
+
+const { roomFactory } = Context
 
 consola.info('Vue Context Mounted successfully')
-const peerConexion = PeerFactory.createPeerFor('room-name')
+const room = roomFactory.createRoom('sync-video-rtc')
 
-const connectionState = useObservable(peerConexion.connectionState)
+const connections = useObservable(room.peerConnections)
 </script>
 
 <template>
-    <div class="sync-video">
-        <p>Connection State: {{ connectionState }}</p>
+    <div v-for="connection of connections">
+        <ConnectionComponent :connection="connection" />
     </div>
 </template>
 

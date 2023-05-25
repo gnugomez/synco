@@ -1,6 +1,6 @@
 import consola from 'consola'
 import { SignalingActions } from '../../domain/signaling/SignalingActions'
-import type PeerConnectionWebRTC from './PeerConnectionWebRTC'
+import type PeerConnectionWebRTC from './WebRTCPeerConnection'
 import type SignalingChannel from '../../domain/signaling/SignalingChannel'
 
 export default class NegotiationNeededHandler {
@@ -15,7 +15,6 @@ export default class NegotiationNeededHandler {
             peer.makingOffer.next(true)
             await peerConnection.setLocalDescription()
             consola.info('Description offer ready to be sent: ', peerConnection.localDescription)
-            peer.localDescription.next(peerConnection.localDescription)
 
             // Once the local description is ready, send it to the other peer through the signaling channel
             signalingChannel.postMessage({

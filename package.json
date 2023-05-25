@@ -24,6 +24,7 @@
     "vue": "^3.3.2"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^0.39.3",
     "@crxjs/vite-plugin": "2.0.0-beta.17",
     "@rushstack/eslint-patch": "^1.2.0",
     "@tsconfig/node18": "^2.0.1",

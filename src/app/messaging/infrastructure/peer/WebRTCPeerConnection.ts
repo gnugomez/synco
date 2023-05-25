@@ -4,31 +4,34 @@ import NegotiationNeededHandler from './NegotiationNeededHandler'
 import DescriptionReceivedHandler from './DescriptionReceivedHandler'
 import IceCandidateHandler from './IceCandidateHandler'
 import { SignalingActions } from '../../domain/signaling/SignalingActions'
-import type { SignalingMessage } from '../../domain/signaling/SignalingMessage'
+import type SignalingMessage from '../../domain/signaling/SignalingMessage'
 import type PeerConnection from '../../domain/peer/PeerConnection'
 import { BehaviorSubject, map, type Observable, fromEvent } from 'rxjs'
 import { PeerConnectionState } from '../../domain/peer/PeerConnectionState'
 import type { SignalingState } from '../../domain/signaling/SignalingState'
+import type ConnectionIdentifier from '../../domain/peer/ConnectionIdentifier'
 
-export default class PeerConnectionWebRTC implements PeerConnection<string> {
-    private peerConnection: RTCPeerConnection | null = null
+export default class PeerConnectionWebRTC implements PeerConnection {
+    private peerConnection: RTCPeerConnection
     private dataChannel: RTCDataChannel | null = null
 
     _connectionState = new BehaviorSubject<RTCPeerConnectionState | null>(null)
     _signalingState = new BehaviorSubject<RTCSignalingState | null>(null)
 
     makingOffer = new BehaviorSubject<boolean>(false)
-    localDescription = new BehaviorSubject<RTCSessionDescription | null>(null)
-    remoteDescription = new BehaviorSubject<RTCSessionDescription | null>(null)
 
-    constructor(private signalingChannel: SignalingChannel, private config: RTCConfiguration) {
+    constructor(
+        public identifier: ConnectionIdentifier,
+        private signalingChannel: SignalingChannel,
+        private config: RTCConfiguration
+    ) {
         consola.info('Initializing peer to peer connection')
         this.peerConnection = new RTCPeerConnection(this.config)
         this.dataChannel = this.peerConnection.createDataChannel('sync-video-rtc')
 
         /* Setting up a callback function to handle the `onnegotiationneeded` event when a new negotiation is needed */
         this.peerConnection.onnegotiationneeded = () =>
-            NegotiationNeededHandler.handle(this, this.peerConnection!, this.signalingChannel)
+            NegotiationNeededHandler.handle(this, this.peerConnection, this.signalingChannel)
 
         /* Setting up a callback function to handle the `onicecandidate` event when a new ICE candidate is available */
         this.peerConnection.onicecandidate = ({ candidate }) =>
@@ -36,11 +39,11 @@ export default class PeerConnectionWebRTC implements PeerConnection<string> {
 
         /* Setting up reactive variables */
         fromEvent(this.peerConnection, 'connectionstatechange')
-            .pipe(map(() => this.peerConnection!.connectionState))
+            .pipe(map(() => this.peerConnection.connectionState))
             .subscribe(this._connectionState)
 
-        fromEvent(this.peerConnection, 'onsignalingstatechange')
-            .pipe(map(() => this.peerConnection!.signalingState))
+        fromEvent(this.peerConnection, 'signalingstatechange')
+            .pipe(map(() => this.peerConnection.signalingState))
             .subscribe(this._signalingState)
 
         this.peerConnection.ondatachannel = this.onDataChannelHandler
@@ -78,12 +81,12 @@ export default class PeerConnectionWebRTC implements PeerConnection<string> {
                         DescriptionReceivedHandler.handle(
                             this,
                             description,
-                            this.peerConnection!,
+                            this.peerConnection,
                             this.signalingChannel
                         )
                     break
                 case SignalingActions.SEND_CANDIDATE:
-                    if (candidate) IceCandidateHandler.received(candidate, this.peerConnection!)
+                    if (candidate) IceCandidateHandler.received(candidate, this.peerConnection)
                     break
             }
         } catch (error) {
@@ -92,8 +95,6 @@ export default class PeerConnectionWebRTC implements PeerConnection<string> {
     }
 
     close = () => {
-        if (this.peerConnection) {
-            this.peerConnection.close()
-        }
+        this.peerConnection.close()
     }
 }

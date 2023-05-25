@@ -1,5 +1,5 @@
 import consola from 'consola'
-import type PeerConnectionWebRTC from './PeerConnectionWebRTC'
+import type PeerConnectionWebRTC from './WebRTCPeerConnection'
 import { SignalingActions } from '../../domain/signaling/SignalingActions'
 import type SignalingChannel from '../../domain/signaling/SignalingChannel'
 
@@ -23,13 +23,11 @@ export default class DescriptionReceivedHandler {
         }
 
         await peerConnection.setRemoteDescription(description)
-        peer.remoteDescription.next(peerConnection.remoteDescription)
 
         if ('offer' === description.type) {
             consola.info('Creating answer')
             await peerConnection.setLocalDescription()
             consola.info('Description answer ready to be sent: ', peerConnection.localDescription)
-            peer.localDescription.next(peerConnection.localDescription)
 
             signalingChannel.postMessage({
                 action: SignalingActions.SEND_DESCRIPTION,

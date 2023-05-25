@@ -1,7 +1,9 @@
+import type RoomEvent from '../room/RoomEvent'
 import { SignalingActions } from './SignalingActions'
 
-export type SignalingMessage = {
-  action: SignalingActions
-  description?: RTCSessionDescriptionInit
-  candidate?: RTCIceCandidateInit
+export default interface SignalingMessage {
+    action: SignalingActions
+    description?: RTCSessionDescriptionInit
+    candidate?: RTCIceCandidateInit
+    roomEvent?: RoomEvent
 }
