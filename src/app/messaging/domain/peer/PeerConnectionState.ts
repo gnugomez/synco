@@ -4,5 +4,5 @@ export enum PeerConnectionState {
   CONNECTING = 'connecting',
   DISCONNECTED = 'disconnected',
   FAILED = 'failed',
-  NEW = 'new'
+  NEW = 'new',
 }

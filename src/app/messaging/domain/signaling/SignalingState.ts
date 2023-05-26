@@ -4,5 +4,5 @@ export enum SignalingState {
   HAVE_LOCAL_ANSWER = 'have-local-pranswer',
   HAVE_REMOTE_ANSWER = 'have-remote-offer',
   HAVE_REMOTE_PREANSWER = 'have-remote-pranswer',
-  STABLE = 'stable'
+  STABLE = 'stable',
 }

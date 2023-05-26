@@ -1,3 +1,3 @@
 export enum WorkerActions {
-  INIT_UI_CONTEXT = 'initUIContext'
+  INIT_UI_CONTEXT = 'initUIContext',
 }

@@ -5,11 +5,12 @@ import BroadcastSignalingChannelFactory from '../signaling/BroadcastSignalingCha
 import type SignalingChannelFactory from '../../application/signaling/SignalingChannelFactory'
 
 export default class Context {
-    static readonly signalingChannelFactory: SignalingChannelFactory =
-        new BroadcastSignalingChannelFactory()
-    static readonly peerFactory: PeerFactory = new WebRTCPeerFactory()
-    static readonly roomFactory: RoomFactory = new RoomFactory(
-        this.peerFactory,
-        this.signalingChannelFactory
-    )
+  static readonly signalingChannelFactory: SignalingChannelFactory
+    = new BroadcastSignalingChannelFactory()
+
+  static readonly peerFactory: PeerFactory = new WebRTCPeerFactory(this.signalingChannelFactory)
+  static readonly roomFactory: RoomFactory = new RoomFactory(
+    this.peerFactory,
+    this.signalingChannelFactory,
+  )
 }
