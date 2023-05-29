@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { consola } from 'consola'
 import { useObservable } from '@vueuse/rxjs'
-import Context from '../messaging/infrastructure/context/Context'
+import Context from '../comunication/context/Context'
 import ConnectionComponent from './ConnectionComponent.vue'
 
 const { roomFactory } = Context
@@ -18,7 +18,7 @@ const connections = useObservable(room.peerConnections)
     <div>Room client ID: {{ room.peerId.id }}</div>
     <ConnectionComponent
       v-for="connection of connections"
-      :key="connection.identifier.id"
+      :key="connection.targetIdentifier.id"
       :connection="connection"
       class="item"
     />
