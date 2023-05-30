@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { useObservable } from '@vueuse/rxjs'
-import { consola } from 'consola'
 import type PeerConnection from '../comunication/peer/domain/PeerConnection'
 
 const props = defineProps<{ connection: PeerConnection }>()
-
-props.connection.connectionState.subscribe((state) => {
-	consola.success('Connection State: ', state)
-})
 
 const state = useObservable(props.connection.connectionState)
 const signalingState = useObservable(props.connection.signalingState)

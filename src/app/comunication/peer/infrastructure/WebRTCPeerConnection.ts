@@ -1,27 +1,29 @@
 import { consola } from 'consola'
-import { BehaviorSubject, type Observable, fromEvent, map } from 'rxjs'
+import { BehaviorSubject, type Observable, Subject, fromEvent, map } from 'rxjs'
 import type SignalingChannel from '../../signaling/domain/SignalingChannel'
-import { SignalingActions } from '../../signaling/domain/SignalingActions'
 import SignalingMessage from '../../signaling/domain/SignalingMessage'
 import type PeerConnection from '../domain/PeerConnection'
 import type { PeerConnectionState } from '../domain/PeerConnectionState'
 import type { SignalingState } from '../../signaling/domain/SignalingState'
 import PeerIdentifier from '../domain/PeerIdentifier'
 import type PeerConnectionEvent from '../domain/PeerConnectionEvent'
-import type PeerDescriptionEvent from '../domain/PeerDescriptionEvent'
-import type PeerCandidateEvent from '../domain/PeerCandidateEvent'
-import IceCandidateHandler from './IceCandidateHandler'
-import NegotiationNeededHandler from './NegotiationNeededHandler'
-import DescriptionReceivedHandler from './DescriptionReceivedHandler'
+import type DescriptionEvent from '../domain/DescriptionEvent'
+import type CandidateEvent from '../domain/CandidateEvent'
+import { PeerConnectionActions } from '../domain/PeerConnectionActions'
+import type PeerMessage from '../domain/PeerMessage'
+import { publishOfferToTargetPeer } from './publishOfferToTargetPeer'
+import { publishIceCandidateToTargetPeer } from './publishIceCandidateToTargetPeer'
+import { handleDescriptionReceived } from './handleDescriptionReceived'
+import { loadIceCandidate } from './loadIceCandidate'
 
 export default class PeerConnectionWebRTC implements PeerConnection {
 	readonly peerConnection: RTCPeerConnection
-	private dataChannel: RTCDataChannel | null = null
+	private dataChannel: RTCDataChannel
 	public ignoreOffer = false
 
 	_connectionState = new BehaviorSubject<RTCPeerConnectionState | null>(null)
 	_signalingState = new BehaviorSubject<RTCSignalingState | null>(null)
-
+	_messages = new Subject<PeerMessage>()
 	makingOffer = new BehaviorSubject<boolean>(false)
 
 	constructor(
@@ -31,17 +33,16 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 		private signalingChannel: SignalingChannel,
 		private config: RTCConfiguration,
 	) {
-		consola.info('Initializing peer to peer connection')
+		consola.debug('Initializing peer to peer connection')
 		this.peerConnection = new RTCPeerConnection(this.config)
 		this.dataChannel = this.peerConnection.createDataChannel('sync-video-rtc')
 
 		/* Setting up a callback function to handle the `onnegotiationneeded` event when a new negotiation is needed */
-		this.peerConnection.onnegotiationneeded = () =>
-			NegotiationNeededHandler.handle(this)
+		this.peerConnection.onnegotiationneeded = () => publishOfferToTargetPeer(this)
 
 		/* Setting up a callback function to handle the `onicecandidate` event when a new ICE candidate is available */
 		this.peerConnection.onicecandidate = ({ candidate }) =>
-			candidate && IceCandidateHandler.ready(candidate, this)
+			candidate && publishIceCandidateToTargetPeer(candidate, this)
 
 		/* Setting up reactive variables */
 		fromEvent(this.peerConnection, 'connectionstatechange')
@@ -58,21 +59,28 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 		this.signalingChannel.messages.subscribe(this.onSignalingEvent)
 	}
 
+	sendMessage(message: PeerMessage): void {
+		if (this.dataChannel.readyState !== 'open')
+			this.dataChannel.onopen = () => this.dataChannel.send(JSON.stringify(message))
+		else
+			this.dataChannel.send(JSON.stringify(message))
+	}
+
 	private onDataChannelHandler = (ev: RTCDataChannelEvent) => {
-		consola.info('Data channel received: ', ev)
-		ev.channel.onmessage = (ev) => {
-			consola.info('Data channel message received: ', ev)
-		}
+		fromEvent<MessageEvent<PeerMessage>>(ev.channel, 'message')
+			.pipe(
+				map(ev => ev.data),
+			).subscribe(this._messages)
 	}
 
 	private onSignalingEvent: (message: SignalingMessage) => void = async ({ action, payload }) => {
-		consola.info('Signaling event received: ', action)
+		consola.debug('Signaling event received: ', action)
 
 		switch (action) {
-			case SignalingActions.DESCRIPTION:
-				this.verifyEvent(payload as PeerDescriptionEvent)
+			case PeerConnectionActions.DESCRIPTION:
+				this.verifyEvent(payload as DescriptionEvent)
 					.then((event) => {
-						DescriptionReceivedHandler.handle(
+						handleDescriptionReceived(
 							this,
 							event,
 							this.peerConnection,
@@ -81,10 +89,10 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 						})
 					})
 				break
-			case SignalingActions.CANDIDATE:
-				this.verifyEvent(payload as PeerCandidateEvent)
+			case PeerConnectionActions.CANDIDATE:
+				this.verifyEvent(payload as CandidateEvent)
 					.then((event) => {
-						IceCandidateHandler.received(
+						loadIceCandidate(
 							event,
 							this.peerConnection,
 						)
@@ -104,7 +112,7 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 				reject(new Error('The event is not for this peer connection'))
 		})
 
-	public sendSignalingEvent = (action: SignalingActions, event: PeerConnectionEvent) => {
+	public sendPeerConnectionEvent = (action: PeerConnectionActions, event: PeerConnectionEvent) => {
 		this.signalingChannel.postMessage(new SignalingMessage<PeerConnectionEvent>(action, event))
 	}
 
@@ -118,5 +126,9 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 
 	public get signalingState(): Observable<SignalingState> {
 		return this._signalingState.pipe(map(state => state as SignalingState))
+	}
+
+	public get messages(): Observable<PeerMessage> {
+		return this._messages.asObservable()
 	}
 }

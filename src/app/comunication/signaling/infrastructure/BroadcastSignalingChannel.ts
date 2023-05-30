@@ -19,7 +19,7 @@ export default class BroadcastSignalingChannel implements SignalingChannel {
 		fromEvent(this.broadcastChannel, 'message')
 			.pipe(
 				map(event => (event as MessageEvent).data),
-				tap(data => consola.info(`BroadcastSignalingChannel with channelName: ${channelName} received: `, data)))
+				tap(data => consola.debug(`BroadcastSignalingChannel with channelName: ${channelName} received: `, data)))
 			.subscribe(this.messages)
 	}
 }

@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { consola } from 'consola'
 import { useObservable } from '@vueuse/rxjs'
-import Context from '../comunication/context/Context'
+import { roomFactory } from '../comunication/context/Context'
 import ConnectionComponent from './ConnectionComponent.vue'
 
-const { roomFactory } = Context
-
-consola.info('Vue Context Mounted successfully')
+consola.debug('Vue Context Mounted successfully')
 const room = roomFactory.createRoom('sync-video-rtc')
 
 const connections = useObservable(room.peerConnections)

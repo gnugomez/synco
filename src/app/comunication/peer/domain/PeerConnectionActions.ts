@@ -1,4 +1,4 @@
-export enum SignalingActions {
+export enum PeerConnectionActions {
 	DESCRIPTION = 'sendDescription',
 	CANDIDATE = 'sendCandidate',
 	ROOM_CREATED = 'roomCreated',
