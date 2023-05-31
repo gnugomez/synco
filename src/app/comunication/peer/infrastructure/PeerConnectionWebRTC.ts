@@ -63,9 +63,9 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 	}
 
 	private onDataChannelHandler = (ev: RTCDataChannelEvent) => {
-		fromEvent<MessageEvent<PeerMessage>>(ev.channel, 'message')
+		fromEvent<MessageEvent<string>>(ev.channel, 'message')
 			.pipe(
-				map(ev => ev.data),
+				map(ev => JSON.parse(ev.data) as PeerMessage),
 			).subscribe(this._messages)
 	}
 
@@ -90,7 +90,7 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 					.then((event) => {
 						loadIceCandidate(
 							event,
-							this.peerConnection,
+							this,
 						)
 					}).catch((error) => {
 						consola.debug('Error verifying candidate event: ', error, event)

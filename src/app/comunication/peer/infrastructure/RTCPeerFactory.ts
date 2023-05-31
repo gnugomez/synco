@@ -3,7 +3,7 @@ import type PeerFactory from '../application/PeerFactory'
 import type PeerIdentifier from '../domain/PeerIdentifier'
 import type SignalingChannel from '../../signaling/domain/SignalingChannel'
 import { PEER_TO_PEER_CONFIG } from './PeerConstants'
-import PeerConnectionWebRTC from './WebRTCPeerConnection'
+import PeerConnectionWebRTC from './PeerConnectionWebRTC'
 
 export default class RTCPeerFactory implements PeerFactory {
 	createPeerConnection(

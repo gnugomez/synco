@@ -7,6 +7,10 @@ import ConnectionComponent from './ConnectionComponent.vue'
 consola.debug('Vue Context Mounted successfully')
 const room = roomFactory.createRoom('sync-video-rtc')
 
+room.dataStream.subscribe((data) => {
+	consola.debug('Data received', data)
+})
+
 const connections = useObservable(room.peerConnections)
 </script>
 

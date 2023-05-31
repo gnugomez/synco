@@ -1,7 +1,7 @@
 import consola from 'consola'
 import CandidateEvent from '../domain/CandidateEvent'
 import { PeerConnectionActions } from '../domain/PeerConnectionActions'
-import type WebRTCPeerConnection from './WebRTCPeerConnection'
+import type WebRTCPeerConnection from './PeerConnectionWebRTC'
 
 export async function publishIceCandidateToTargetPeer(
 	candidate: RTCIceCandidate,

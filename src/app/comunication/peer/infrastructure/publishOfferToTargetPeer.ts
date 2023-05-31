@@ -1,7 +1,7 @@
 import consola from 'consola'
 import DescriptionEvent from '../domain/DescriptionEvent'
 import { PeerConnectionActions } from '../domain/PeerConnectionActions'
-import type PeerConnectionWebRTC from './WebRTCPeerConnection'
+import type PeerConnectionWebRTC from './PeerConnectionWebRTC'
 
 export async function publishOfferToTargetPeer(
 	{ peerConnection, sendPeerConnectionEvent: sendSignalingEvent, makingOffer, selfIdentifier, targetIdentifier }: PeerConnectionWebRTC,
