@@ -37,14 +37,11 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 		this.peerConnection = new RTCPeerConnection(this.config)
 		this.dataChannel = this.peerConnection.createDataChannel('sync-video-rtc')
 
-		/* Setting up a callback function to handle the `onnegotiationneeded` event when a new negotiation is needed */
 		this.peerConnection.onnegotiationneeded = () => publishOfferToTargetPeer(this)
 
-		/* Setting up a callback function to handle the `onicecandidate` event when a new ICE candidate is available */
 		this.peerConnection.onicecandidate = ({ candidate }) =>
 			candidate && publishIceCandidateToTargetPeer(candidate, this)
 
-		/* Setting up reactive variables */
 		fromEvent(this.peerConnection, 'connectionstatechange')
 			.pipe(map(() => this.peerConnection.connectionState))
 			.subscribe(this._connectionState)
@@ -55,13 +52,12 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 
 		this.peerConnection.ondatachannel = this.onDataChannelHandler
 
-		/* Setting up a callback function to be executed when a signaling message is received through the `signalingChannel` */
 		this.signalingChannel.messages.subscribe(this.onSignalingEvent)
 	}
 
 	sendMessage(message: PeerMessage): void {
 		if (this.dataChannel.readyState !== 'open')
-			this.dataChannel.onopen = () => this.dataChannel.send(JSON.stringify(message))
+			this.dataChannel.addEventListener('open', () => this.dataChannel.send(JSON.stringify(message)))
 		else
 			this.dataChannel.send(JSON.stringify(message))
 	}
@@ -84,9 +80,9 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 							this,
 							event,
 							this.peerConnection,
-						).catch((error) => {
-							consola.debug('Error verifying description event: ', error, event)
-						})
+						)
+					}).catch((error) => {
+						consola.debug('Error verifying description event: ', error, event)
 					})
 				break
 			case PeerConnectionActions.CANDIDATE:

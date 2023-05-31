@@ -33,23 +33,19 @@ export default class Room {
 		this.peerConnections.pipe(
 			switchMap(connections => merge(...connections.map(connection => connection.messages))),
 		).subscribe(this.dataStream)
-
-		this.dataStream.subscribe((message) => {
-			consola.debug(`Room ${this.id} received message: `, message)
-		})
 	}
 
-	public broadcastPeerMessage(message: PeerMessage) {
+	public broadcastMessage(message: PeerMessage) {
 		this.peerConnections.value.forEach((connection) => {
 			connection.sendMessage(message)
 		})
 	}
 
-	public sendRoomEvent(action: RoomActions, roomEvent: RoomEvent) {
+	private sendRoomEvent(action: RoomActions, roomEvent: RoomEvent) {
 		this.signalingChannel.postMessage(new SignalingMessage<RoomEvent>(action, roomEvent))
 	}
 
-	public sendPeerConnectionEvent(action: PeerConnectionActions, peerEvent: PeerConnectionEvent) {
+	private sendPeerConnectionEvent(action: PeerConnectionActions, peerEvent: PeerConnectionEvent) {
 		this.signalingChannel.postMessage(new SignalingMessage<RoomEvent>(action, peerEvent))
 	}
 
@@ -88,7 +84,7 @@ export default class Room {
 
 			this.sendInitPeerConnectionEvent(joinRoomEvent.peerIdentifier)
 
-			this.broadcastPeerMessage({ message: 'Hello from room', from: this.peerId })
+			this.broadcastMessage({ message: 'Hello from room', from: this.peerId })
 		}
 	}
 
