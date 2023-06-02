@@ -4,6 +4,6 @@
   "compilerOptions": {
     "composite": true,
     "lib": [],
-    "types": ["node", "vite/client", "jsdom", "chrome"]
+    "types": ["node", "vite/client", "jsdom", "unplugin-icons/types/vue", "chrome"]
   }
 }

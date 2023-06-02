@@ -83,8 +83,6 @@ export default class Room {
 			])
 
 			this.sendInitPeerConnectionEvent(joinRoomEvent.peerIdentifier)
-
-			this.broadcastMessage({ message: 'Hello from room', from: this.peerId })
 		}
 	}
 

@@ -2,6 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-#sync-video-rtc * {
+body #sync-video-rtc-root * {
   all: unset;
 }

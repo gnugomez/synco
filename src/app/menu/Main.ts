@@ -20,10 +20,33 @@ chrome.runtime.onMessage.addListener((request, sender) => {
 	if (request.action === INIT_UI_CONTEXT) {
 		try {
 			consola.debug('Initiating menu UI: ', sender)
-			const el: Element = document.createElement('div')
-			el.id = 'sync-video-rtc'
-			document.body.appendChild(el)
-			app.mount(el)
+			const elRoot = document.createElement('div')
+			elRoot.id = 'sync-video-rtc-root'
+
+			const elApp = document.createElement('div')
+			elApp.id = 'sync-video-rtc-app'
+
+			// create a shadow root to encapsulate styles
+
+			const shadowRoot = elRoot.attachShadow({ mode: 'open' })
+			shadowRoot.appendChild(elApp)
+
+			document.body.appendChild(elRoot)
+
+			// move the head styles to the shadow root
+
+			let stylesSelector = 'style#sync-vide-rtc-styles'
+
+			if (import.meta.env.DEV)
+				stylesSelector = 'style[data-vite-dev-id]'
+
+			const styles = document.querySelectorAll(stylesSelector)
+
+			styles.forEach((style) => {
+				shadowRoot.appendChild(style)
+			})
+
+			app.mount(elApp)
 		}
 		catch (error) {
 			consola.error('There was an error initiating menu UI: ', error)
