@@ -1,9 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createMemoryHistory, createRouter } from 'vue-router'
 import DefaultView from './Default.vue'
 import OtherView from './Other.vue'
 
 const router = createRouter({
-	history: createWebHistory(import.meta.env.BASE_URL),
+	history: createMemoryHistory(import.meta.env.BASE_URL),
 	routes: [
 		{
 			path: '',
@@ -11,7 +11,7 @@ const router = createRouter({
 			component: DefaultView,
 		},
 		{
-			path: '',
+			path: '/other',
 			name: 'other',
 			component: OtherView,
 		},

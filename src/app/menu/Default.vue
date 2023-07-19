@@ -2,16 +2,16 @@
   <div class="wrapper">
     <header>
       <h1>Create a room and start sharing</h1>
+      <p class="text-white/60 text-sm italic">
+        Once you create a room a link and a code will be generated in order to let you start a peer
+        to peer connection with your colleges and start sharng content!
+      </p>
     </header>
-    <p class="text-white/60 text-sm italic">
-      Once you create a room a link and a code will be generated in order to let you start a peer to
-      peer connection with your colleges and start sharng content!
-    </p>
     <main>
-      <router-link :to="{ name: 'other' }" class="button secondary">
+      <router-link to="/other" class="button secondary">
         Join
       </router-link>
-      <router-link :to="{ name: 'other' }" class="button primary">
+      <router-link to="/other" class="button primary">
         Create
       </router-link>
     </main>
@@ -23,6 +23,8 @@
   @apply grid gap-5;
 }
 header {
+	@apply grid gap-1;
+
   h1 {
     @apply text-3xl font-extrabold;
   }
