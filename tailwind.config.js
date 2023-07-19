@@ -139,5 +139,8 @@ export default {
 			96: '384px',
 		},
 	},
-	plugins: [],
+	plugins: [
+		require('@tailwindcss/aspect-ratio'),
+		require('@tailwindcss/forms'),
+	],
 }

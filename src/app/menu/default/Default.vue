@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import { useRoomStore } from '../room/RoomStore'
+
+const { createRandomRoom } = useRoomStore()
+</script>
+
 <template>
   <div class="wrapper">
     <header>
@@ -8,12 +14,10 @@
       </p>
     </header>
     <main>
-      <router-link to="/other" class="button secondary">
+      <router-link to="/join" class="button secondary">
         Join
       </router-link>
-      <router-link to="/other" class="button primary">
-        Create
-      </router-link>
+      <a class="button primary" @click="createRandomRoom"> Create </a>
     </main>
   </div>
 </template>
@@ -23,11 +27,7 @@
   @apply grid gap-5;
 }
 header {
-	@apply grid gap-1;
-
-  h1 {
-    @apply text-3xl font-extrabold;
-  }
+  @apply grid gap-1;
 }
 main {
   @apply grid grid-cols-2 gap-5;

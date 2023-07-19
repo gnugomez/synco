@@ -5,7 +5,7 @@ import { createPinia } from 'pinia'
 import mainStyle from '../../assets/main.scss?inline'
 import { WorkerActions } from '../browser/WorkerActions'
 
-import router from './Router'
+import router from './router/Router'
 import App from './App.vue'
 
 if (import.meta.env.DEV)
