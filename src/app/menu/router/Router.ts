@@ -22,6 +22,7 @@ const router = createRouter({
 			path: '/join',
 			name: 'join',
 			component: JoinView,
+			beforeEnter: [roomIsUndefined],
 		},
 	],
 })

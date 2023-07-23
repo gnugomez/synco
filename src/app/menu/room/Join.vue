@@ -19,14 +19,16 @@ function join() {
   <div class="wrapper">
     <header>
       <div class="input-area">
-        <input v-model="roomName" type="text" placeholder="Room name here">
+        <form class="grid" @submit="join">
+          <input v-model="roomName" type="text" placeholder="Room name">
+        </form>
       </div>
       <p class="text-white/60 text-sm italic">
         Write an existing room code in order to join a room and start sharing content!
       </p>
     </header>
     <main>
-      <a class="button primary" @click="join()"> Join </a>
+      <a class="button primary" @click="join"> Join </a>
     </main>
   </div>
 </template>
@@ -36,7 +38,7 @@ function join() {
   @apply grid gap-5;
 }
 header {
-  @apply grid px-2 pt-2 gap-1 relative;
+  @apply grid gap-1 relative;
   .input-area {
     @apply grid;
 

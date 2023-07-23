@@ -29,31 +29,34 @@ const isYellow = computed(() => {
     class="connection"
     :title="`Polite: ${connection.polite}, Signaling state: ${signalingState}`"
   >
-    <div>{{ connection.targetIdentifier.id }}</div>
-    <div class="label" :title="state" :class="{ green: isGreen, yellow: isYellow, red: isRed }" />
+    <div class="wrapper">
+      <div>{{ connection.targetIdentifier.id }}</div>
+      <div class="label" :title="state" :class="{ green: isGreen, yellow: isYellow, red: isRed }" />
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .connection {
-  @apply flex justify-between items-center;
-  @apply p-2;
-  @apply bg-gray-500/40 rounded-md;
+  .wrapper {
+    @apply flex justify-between items-center;
+    @apply p-2;
+    @apply bg-gray-500/40 rounded-md;
+  }
+  .label {
+    @apply w-3 h-3 rounded-full;
 
-	.label {
-		@apply w-3 h-3 rounded-full;
+    &.green {
+      @apply bg-green-500;
+    }
 
-		&.green {
-			@apply bg-green-500;
-		}
+    &.yellow {
+      @apply bg-yellow-500;
+    }
 
-		&.yellow {
-			@apply bg-yellow-500;
-		}
-
-		&.red {
-			@apply bg-red-500;
-		}
-	}
+    &.red {
+      @apply bg-red-500;
+    }
+  }
 }
 </style>
