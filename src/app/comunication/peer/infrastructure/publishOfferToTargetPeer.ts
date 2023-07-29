@@ -13,8 +13,7 @@ export async function publishOfferToTargetPeer(
 		await peerConnection.setLocalDescription()
 		consola.debug('Description offer ready to be sent: ', peerConnection.localDescription)
 
-		// Once the local description is ready, send it to the other peer through the signaling channel
-		peerConnection.localDescription && sendSignalingEvent(PeerConnectionActions.DESCRIPTION,
+		sendSignalingEvent(PeerConnectionActions.DESCRIPTION,
 			new DescriptionEvent(selfIdentifier, targetIdentifier, JSON.parse(JSON.stringify(peerConnection.localDescription))))
 	}
 	catch (err) {

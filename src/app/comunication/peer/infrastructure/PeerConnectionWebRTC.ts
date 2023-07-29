@@ -18,7 +18,7 @@ import { loadIceCandidate } from './loadIceCandidate'
 
 export default class PeerConnectionWebRTC implements PeerConnection {
 	readonly peerConnection: RTCPeerConnection
-	private dataChannel: RTCDataChannel
+	private dataChannel?: RTCDataChannel
 	public ignoreOffer = false
 
 	_connectionState = new BehaviorSubject<RTCPeerConnectionState | null>(null)
@@ -35,7 +35,8 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 	) {
 		consola.debug('Initializing peer to peer connection')
 		this.peerConnection = new RTCPeerConnection(this.config)
-		this.dataChannel = this.peerConnection.createDataChannel('sync-video-rtc')
+		if (!this.polite)
+			this.dataChannel = this.peerConnection.createDataChannel('sync-video-rtc')
 
 		this.peerConnection.onnegotiationneeded = () => publishOfferToTargetPeer(this)
 
@@ -56,13 +57,18 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 	}
 
 	sendMessage(message: PeerMessage): void {
+		if (!this.dataChannel) {
+			consola.error('Data channel not initialized')
+			return
+		}
 		if (this.dataChannel.readyState !== 'open')
-			this.dataChannel.addEventListener('open', () => this.dataChannel.send(JSON.stringify(message)))
+			this.dataChannel.addEventListener('open', () => this.dataChannel?.send(JSON.stringify(message)))
 		else
 			this.dataChannel.send(JSON.stringify(message))
 	}
 
 	private onDataChannelHandler = (ev: RTCDataChannelEvent) => {
+		this.dataChannel = ev.channel
 		fromEvent<MessageEvent<string>>(ev.channel, 'message')
 			.pipe(
 				map(ev => JSON.parse(ev.data) as PeerMessage),
@@ -108,7 +114,7 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 				reject(new Error('The event is not for this peer connection'))
 		})
 
-	public sendPeerConnectionEvent = (action: PeerConnectionActions, event: PeerConnectionEvent) => {
+	sendPeerConnectionEvent = (action: PeerConnectionActions, event: PeerConnectionEvent) => {
 		this.signalingChannel.postMessage(new SignalingMessage<PeerConnectionEvent>(action, event))
 	}
 

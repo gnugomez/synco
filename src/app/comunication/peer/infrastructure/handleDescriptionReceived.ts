@@ -15,8 +15,10 @@ export async function handleDescriptionReceived(
 
 		peer.ignoreOffer = !peer.polite && isCollisioningOffer
 
-		if (peer.ignoreOffer)
+		if (peer.ignoreOffer) {
+			consola.error('Ignoring offer from peer because of collision', peerDescriptionEvent)
 			return
+		}
 	}
 
 	try {

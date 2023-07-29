@@ -8,6 +8,7 @@ export async function loadIceCandidate({ candidate }: CandidateEvent, peer: Peer
 		consola.debug('Candidate added successfully: ', candidate)
 	}
 	catch (error) {
-		consola.error('There was an error adding the candidate: ', error)
+		if (!peer.ignoreOffer)
+			consola.error('Error adding candidate: ', error)
 	}
 }

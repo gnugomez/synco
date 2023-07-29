@@ -31,17 +31,5 @@ header {
 }
 main {
   @apply grid grid-cols-2 gap-5;
-
-  .button {
-    @apply px-6 py-4 text-sm text-center rounded-md font-semibold cursor-default;
-
-    &.secondary {
-      @apply bg-gray-500/40 text-white;
-    }
-
-    &.primary {
-      @apply bg-gradient-to-br from-white to-slate-300 text-gray-950;
-    }
-  }
 }
 </style>

@@ -12,11 +12,11 @@ const noArrowRoutes = ['/', '/room']
 <template>
   <div class="floating-menu-wrapper">
     <div class="buttons-wrapper">
-      <div class="button">
+      <div class="floating-button">
         <Close class="arrow" />
       </div>
       <Transition name="arrow">
-        <div v-if="!noArrowRoutes.includes(route.path)" class="button" @click="back">
+        <div v-if="!noArrowRoutes.includes(route.path)" class="floating-button" @click="back">
           <Arrow class="arrow" />
         </div>
       </Transition>
@@ -50,7 +50,7 @@ const noArrowRoutes = ['/', '/room']
     @apply flex flex-col gap-2;
   }
 
-  .button {
+  .floating-button {
     @apply flex items-center justify-center w-9 h-9 rounded-full;
     @apply text-white transition-all duration-300 bg-gray-950;
 
