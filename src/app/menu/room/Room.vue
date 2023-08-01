@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useObservable } from '@vueuse/rxjs'
-import { useMediaControls, useToggle } from '@vueuse/core'
-import { computed, onMounted, watch } from 'vue'
-import { consola } from 'consola'
-import ConnectionComponent from './ConnectionComponent.vue'
+import { useToggle } from '@vueuse/core'
+import { computed, onMounted } from 'vue'
+import ConnectionComponent from './Connection.vue'
 import { useRoomStore } from './RoomStore'
-import VideoElementHandler from './VideoElementHandler'
+import { useVideoElement } from './composables/useVideoElement'
 import Copy from '~icons/ic/round-content-copy'
 
 const { currentRoom } = storeToRefs(useRoomStore())
@@ -15,34 +14,13 @@ if (!currentRoom.value)
 
 const connections = useObservable(currentRoom.value.peerConnections)
 
-const connectionStates = computed(() => {
-	return connections.value?.map((connection) => {
-		return useObservable(connection.connectionState).value
-	})
-})
-
-watch(connectionStates, (states) => {
-	consola.info('Connection states', states)
-	if (states?.every(state => state === 'connected')) {
-		currentRoom.value?.broadcastMessage({
-			data: 'Hello world',
-		})
-	}
-})
-
-currentRoom.value?.dataStream.subscribe((data) => {
-	consola.success('Data received', data)
-})
-
-currentRoom.value?.broadcastMessage({
-	data: 'Hello world',
-})
-
 const hasConnections = computed(() => {
 	return connections.value && connections.value.length > 0
 })
 
 const [copyed, toggleCopyed] = useToggle(false)
+
+const { findVideoElement, duration, currentTime, playing } = useVideoElement()
 
 function copy() {
 	navigator.clipboard.writeText(currentRoom.value!.id).then(() => {
@@ -53,17 +31,9 @@ function copy() {
 	})
 }
 
-watch(VideoElementHandler.videoElment, (element) => {
-	if (element)
-		consola.info('Video element found', element)
-	else consola.warn('Video element not found')
-})
-
 onMounted(() => {
-	VideoElementHandler.findVideoElement()
+	findVideoElement()
 })
-
-const { currentTime } = useMediaControls(VideoElementHandler.videoElment)
 </script>
 
 <template>
@@ -78,7 +48,9 @@ const { currentTime } = useMediaControls(VideoElementHandler.videoElment)
       Eureka! you have successfully joined a room, just share the room code with your friends!
       Remember, they should also have this extension installed.
     </p>
-    <p>{{ currentTime }}</p>
+    <p>
+      {{ currentTime }} - {{ duration }} - {{ playing }}
+    </p>
     <div v-if="hasConnections" class="connections">
       <ConnectionComponent
         v-for="connection in connections"
@@ -122,3 +94,4 @@ const { currentTime } = useMediaControls(VideoElementHandler.videoElment)
   }
 }
 </style>
+import { useVideoElement } from './useVideoElement'
