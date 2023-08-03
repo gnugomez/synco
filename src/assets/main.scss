@@ -21,6 +21,7 @@ h2 {
 
 .button {
   @apply px-6 py-4 text-sm text-center rounded-md font-semibold cursor-default;
+  @apply transition-all duration-500 ease-in-out;
 
   &.secondary {
     @apply bg-gray-500/40 text-white;
@@ -28,5 +29,9 @@ h2 {
 
   &.primary {
     @apply bg-gradient-to-br from-white to-slate-300 text-gray-950;
+
+    &:hover {
+      @apply shadow-2xl shadow-white/40;
+    }
   }
 }

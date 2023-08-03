@@ -26,9 +26,11 @@ const { createRandomRoom } = useRoomStore()
 .wrapper {
   @apply grid gap-5;
 }
+
 header {
   @apply grid gap-1;
 }
+
 main {
   @apply grid grid-cols-2 gap-5;
 }

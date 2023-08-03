@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import Close from '~icons/ion/close-outline'
 import Arrow from '~icons/ic/twotone-arrow-back'
 
 const route = useRoute()
-const { back } = useRouter()
+const {back} = useRouter()
 
 const noArrowRoutes = ['/', '/room']
 </script>
@@ -13,15 +13,15 @@ const noArrowRoutes = ['/', '/room']
   <div class="floating-menu-wrapper">
     <div class="buttons-wrapper">
       <div class="floating-button">
-        <Close class="arrow" />
+        <Close class="arrow"/>
       </div>
       <Transition name="arrow">
         <div v-if="!noArrowRoutes.includes(route.path)" class="floating-button" @click="back">
-          <Arrow class="arrow" />
+          <Arrow class="arrow"/>
         </div>
       </Transition>
     </div>
-    <slot />
+    <slot/>
   </div>
 </template>
 
@@ -33,12 +33,13 @@ const noArrowRoutes = ['/', '/room']
 
 .arrow-enter-from,
 .arrow-leave-to {
-	@apply pointer-events-none;
+  @apply pointer-events-none;
   @apply opacity-0 scale-50;
 }
+
 .floating-menu-wrapper {
   @apply fixed right-2 top-2 z-[999999];
-  @apply w-96 bg-gray-950/75 backdrop-blur-lg backdrop-saturate-200 border border-gray-950 rounded-2xl shadow-lg;
+  @apply w-96 bg-gray-950/75 backdrop-blur-lg backdrop-saturate-200 border-2 border-white/10 rounded-2xl shadow-lg;
   @apply p-5;
   @apply grid place-items-center;
   @apply transition-all duration-300;
@@ -52,7 +53,7 @@ const noArrowRoutes = ['/', '/room']
 
   .floating-button {
     @apply flex items-center justify-center w-9 h-9 rounded-full;
-    @apply text-white transition-all duration-300 bg-gray-950;
+    @apply text-white transition-all duration-300 bg-gray-950 border-2 border-white/10;
 
     &:hover {
       @apply scale-110;

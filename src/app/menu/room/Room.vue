@@ -2,10 +2,10 @@
 import { storeToRefs } from 'pinia'
 import { useObservable } from '@vueuse/rxjs'
 import { useToggle } from '@vueuse/core'
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import ConnectionComponent from './Connection.vue'
 import { useRoomStore } from './RoomStore'
-import { useVideoElement } from './composables/useVideoElement'
+import { useVideoControls } from './composables/useVideoControls'
 import Copy from '~icons/ic/round-content-copy'
 
 const { currentRoom } = storeToRefs(useRoomStore())
@@ -20,7 +20,7 @@ const hasConnections = computed(() => {
 
 const [copyed, toggleCopyed] = useToggle(false)
 
-const { findVideoElement, duration, currentTime, playing } = useVideoElement()
+const { duration, currentTime, playing } = useVideoControls()
 
 function copy() {
 	navigator.clipboard.writeText(currentRoom.value!.id).then(() => {
@@ -30,10 +30,6 @@ function copy() {
 		}, 1000)
 	})
 }
-
-onMounted(() => {
-	findVideoElement()
-})
 </script>
 
 <template>
@@ -48,9 +44,7 @@ onMounted(() => {
       Eureka! you have successfully joined a room, just share the room code with your friends!
       Remember, they should also have this extension installed.
     </p>
-    <p>
-      {{ currentTime }} - {{ duration }} - {{ playing }}
-    </p>
+    <p>{{ currentTime }} - {{ duration }} - {{ playing }}</p>
     <div v-if="hasConnections" class="connections">
       <ConnectionComponent
         v-for="connection in connections"
@@ -95,3 +89,5 @@ onMounted(() => {
 }
 </style>
 import { useVideoElement } from './useVideoElement'
+import { useVideoControls } from './composables/useVideoControls'
+./composables/useFindVideoElement
