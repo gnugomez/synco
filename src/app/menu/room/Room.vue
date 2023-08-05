@@ -22,6 +22,12 @@ const [copyed, toggleCopyed] = useToggle(false)
 
 const { duration, currentTime, playing } = useVideoControls()
 
+const currentProgress = computed(() => {
+	if (!duration.value || !currentTime.value)
+		return 0
+	return (currentTime.value / duration.value) * 100
+})
+
 function copy() {
 	navigator.clipboard.writeText(currentRoom.value!.id).then(() => {
 		toggleCopyed()
@@ -44,7 +50,9 @@ function copy() {
       Eureka! you have successfully joined a room, just share the room code with your friends!
       Remember, they should also have this extension installed.
     </p>
-    <p>{{ currentTime }} - {{ duration }} - {{ playing }}</p>
+    <div class="progress">
+      <div class="bar" :style="`width: ${currentProgress}%;`" />
+    </div>
     <div v-if="hasConnections" class="connections">
       <ConnectionComponent
         v-for="connection in connections"
@@ -83,11 +91,20 @@ function copy() {
     }
   }
 
+	.progress {
+		@apply h-1 w-full bg-gray-500/50 rounded-md overflow-hidden;
+		@apply relative;
+
+		.bar {
+			@apply h-full bg-white/80 absolute top-0 left-0;
+			@apply transition-all duration-300;
+		}
+	}
+
   .connections {
     @apply grid gap-3 grid-cols-3;
   }
 }
 </style>
-import { useVideoElement } from './useVideoElement'
-import { useVideoControls } from './composables/useVideoControls'
-./composables/useFindVideoElement
+import { useVideoElement } from './useVideoElement' import { useVideoControls } from
+'./composables/useVideoControls' ./composables/useFindVideoElement

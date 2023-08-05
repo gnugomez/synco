@@ -1,20 +1,19 @@
-import { useObservable } from '@vueuse/rxjs'
+import { toValue, useEventListener, watchIgnorable } from '@vueuse/core'
 import { consola } from 'consola'
-import { BehaviorSubject, Subject, fromEvent, map, mergeMap } from 'rxjs'
-import { onMounted } from 'vue'
+import { type Ref, onMounted, ref } from 'vue'
 
 export function useVideoControls() {
-	const videoElement = new Subject<HTMLVideoElement>()
+	const videoElement = ref<HTMLVideoElement>()
 	const { currentTime, duration, playing } = createVideoEventHooks(videoElement)
 
 	function findVideoElement() {
 		const video = document.querySelector<HTMLVideoElement>('video')
 		if (video) {
 			consola.debug('findVideoElement triggered')
-			videoElement.next(video)
-			currentTime.next(video.currentTime)
-			duration.next(video.duration)
-			playing.next(!video.paused)
+			videoElement.value = video
+			currentTime.value = video.currentTime
+			duration.value = video.duration
+			playing.value = !video.paused
 		}
 	}
 
@@ -23,35 +22,37 @@ export function useVideoControls() {
 	})
 
 	return {
-		currentTime: useObservable(currentTime),
-		duration: useObservable(duration),
-		playing: useObservable(playing),
+		currentTime,
+		duration,
+		playing,
 	}
 }
 
-function createVideoEventHooks(videoElement: Subject<HTMLVideoElement>) {
-	const currentTime = new BehaviorSubject<number>(0)
-	const duration = new BehaviorSubject<number>(0)
-	const playing = new BehaviorSubject<boolean>(false)
+function createVideoEventHooks(target: Ref<HTMLVideoElement | undefined>) {
+	const currentTime = ref<number>(0)
+	const duration = ref<number>(0)
+	const playing = ref<boolean>(false)
 
-	videoElement.pipe(
-		mergeMap(video => fromEvent(video, 'timeupdate')
-			.pipe(map(() => video.currentTime))),
-	).subscribe(currentTime)
+	const { ignoreUpdates: ignoreCurrentTimeUpdates } = watchIgnorable(currentTime, (time) => {
+		const el = toValue(target)
+		if (!el)
+			return
 
-	videoElement.pipe(
-		mergeMap(video => fromEvent(video, 'durationchange')
-			.pipe(map(() => video.duration))),
-	).subscribe(duration)
+		el.currentTime = time
+	})
 
-	videoElement.pipe(
-		mergeMap(video => fromEvent(video, 'play')
-			.pipe(map(() => true))),
-	).subscribe(playing)
+	const { ignoreUpdates: ignorePlayingUpdates } = watchIgnorable(playing, (isPlaying) => {
+		const el = toValue(target)
+		if (!el)
+			return
 
-	videoElement.pipe(
-		mergeMap(video => fromEvent(video, 'pause')
-			.pipe(map(() => false))),
-	).subscribe(playing)
+		isPlaying ? el.play() : el.pause()
+	})
+
+	useEventListener(target, 'timeupdate', () => ignoreCurrentTimeUpdates(() => currentTime.value = (toValue(target))!.currentTime))
+	useEventListener(target, 'durationchange', () => duration.value = (toValue(target))!.duration)
+	useEventListener(target, 'pause', () => ignorePlayingUpdates(() => playing.value = false))
+	useEventListener(target, 'play', () => ignorePlayingUpdates(() => playing.value = true))
+
 	return { currentTime, duration, playing }
 }
