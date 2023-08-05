@@ -18,9 +18,17 @@ const hasConnections = computed(() => {
 	return connections.value && connections.value.length > 0
 })
 
-const [copyed, toggleCopyed] = useToggle(false)
+const { duration, currentTime, seeking, onManualJump, ignoreManualJumpUpdates } = useVideoControls()
 
-const { duration, currentTime, playing } = useVideoControls()
+onManualJump((time) => {
+	currentRoom.value?.broadcastManualJump(time)
+})
+
+currentRoom.value?.onManualJump((time) => {
+	ignoreManualJumpUpdates(() => {
+		currentTime.value = time
+	})
+})
 
 const currentProgress = computed(() => {
 	if (!duration.value || !currentTime.value)
@@ -28,6 +36,7 @@ const currentProgress = computed(() => {
 	return (currentTime.value / duration.value) * 100
 })
 
+const [copyed, toggleCopyed] = useToggle(false)
 function copy() {
 	navigator.clipboard.writeText(currentRoom.value!.id).then(() => {
 		toggleCopyed()
@@ -52,6 +61,9 @@ function copy() {
     </p>
     <div class="progress">
       <div class="bar" :style="`width: ${currentProgress}%;`" />
+    </div>
+    <div>
+      {{ seeking }}
     </div>
     <div v-if="hasConnections" class="connections">
       <ConnectionComponent
@@ -91,15 +103,15 @@ function copy() {
     }
   }
 
-	.progress {
-		@apply h-1 w-full bg-gray-500/50 rounded-md overflow-hidden;
-		@apply relative;
+  .progress {
+    @apply h-1 w-full bg-gray-500/50 rounded-md overflow-hidden;
+    @apply relative;
 
-		.bar {
-			@apply h-full bg-white/80 absolute top-0 left-0;
-			@apply transition-all duration-300;
-		}
-	}
+    .bar {
+      @apply h-full bg-white/80 absolute top-0 left-0;
+      @apply transition-all duration-300;
+    }
+  }
 
   .connections {
     @apply grid gap-3 grid-cols-3;

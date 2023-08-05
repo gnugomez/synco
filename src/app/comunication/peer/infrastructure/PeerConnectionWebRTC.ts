@@ -11,6 +11,7 @@ import type DescriptionEvent from '../domain/DescriptionEvent'
 import type CandidateEvent from '../domain/CandidateEvent'
 import { PeerConnectionActions } from '../domain/PeerConnectionActions'
 import type PeerMessage from '../domain/PeerMessage'
+import type RoomEvent from '../../room/domain/RoomEvent'
 import { publishOfferToTargetPeer } from './publishOfferToTargetPeer'
 import { publishIceCandidateToTargetPeer } from './publishIceCandidateToTargetPeer'
 import { handleDescriptionReceived } from './handleDescriptionReceived'
@@ -23,7 +24,7 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 
 	_connectionState = new BehaviorSubject<RTCPeerConnectionState | null>(null)
 	_signalingState = new BehaviorSubject<RTCSignalingState | null>(null)
-	_messages = new Subject<PeerMessage>()
+	_messages = new Subject<PeerMessage<RoomEvent>>()
 	makingOffer = new BehaviorSubject<boolean>(false)
 
 	constructor(
@@ -35,8 +36,13 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 	) {
 		consola.debug('Initializing peer to peer connection')
 		this.peerConnection = new RTCPeerConnection(this.config)
-		if (!this.polite)
+		if (!this.polite) {
 			this.dataChannel = this.peerConnection.createDataChannel('sync-video-rtc')
+			fromEvent<MessageEvent<string>>(this.dataChannel, 'message')
+				.pipe(
+					map(ev => JSON.parse(ev.data) as PeerMessage<RoomEvent>),
+				).subscribe(this._messages)
+		}
 
 		this.peerConnection.onnegotiationneeded = () => publishOfferToTargetPeer(this)
 
@@ -56,7 +62,7 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 		this.signalingChannel.messages.subscribe(this.onSignalingEvent)
 	}
 
-	sendMessage(message: PeerMessage): void {
+	sendMessage(message: PeerMessage<RoomEvent>): void {
 		if (!this.dataChannel) {
 			consola.error('Data channel not initialized')
 			return
@@ -71,7 +77,7 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 		this.dataChannel = ev.channel
 		fromEvent<MessageEvent<string>>(ev.channel, 'message')
 			.pipe(
-				map(ev => JSON.parse(ev.data) as PeerMessage),
+				map(ev => JSON.parse(ev.data) as PeerMessage<RoomEvent>),
 			).subscribe(this._messages)
 	}
 
@@ -130,7 +136,7 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 		return this._signalingState.pipe(map(state => state as SignalingState))
 	}
 
-	public get messages(): Observable<PeerMessage> {
+	public get messages(): Observable<PeerMessage<RoomEvent>> {
 		return this._messages.asObservable()
 	}
 }

@@ -8,13 +8,14 @@ import PeerIdentifier from '../../peer/domain/PeerIdentifier'
 import InitPeerConnectionEvent from '../../peer/domain/InitPeerConnectionEvent'
 import { PeerConnectionActions } from '../../peer/domain/PeerConnectionActions'
 import type PeerConnectionEvent from '../../peer/domain/PeerConnectionEvent'
-import type PeerMessage from '../../peer/domain/PeerMessage'
+import PeerMessage from '../../peer/domain/PeerMessage'
 import JoinRoomEvent from './JoinRoomEvent'
 import type RoomEvent from './RoomEvent'
 import { RoomActions } from './RoomActions'
+import VideoManualJumpMessage from './VideoManualJumpMessage'
 
 export default class Room {
-	readonly dataStream = new ReplaySubject<PeerMessage>()
+	readonly dataStream = new ReplaySubject<PeerMessage<RoomEvent>>()
 	readonly peerConnections = new BehaviorSubject<PeerConnection[]>([])
 	readonly peerId: PeerIdentifier
 
@@ -35,9 +36,22 @@ export default class Room {
 		).subscribe(this.dataStream)
 	}
 
-	public broadcastMessage(message: PeerMessage) {
+	public broadcastMessage(message: PeerMessage<RoomEvent>) {
 		this.peerConnections.value.forEach((connection) => {
 			connection.sendMessage(message)
+		})
+	}
+
+	public broadcastManualJump(time: number) {
+		this.broadcastMessage(new PeerMessage<RoomEvent>(RoomActions.MANUAL_JUMP, new VideoManualJumpMessage(time)))
+	}
+
+	public onManualJump(consumer: (time: number) => void) {
+		this.dataStream.subscribe((message) => {
+			if (message.action === RoomActions.MANUAL_JUMP) {
+				const payload = message.payload as VideoManualJumpMessage
+				consumer(payload.time)
+			}
 		})
 	}
 
