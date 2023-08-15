@@ -4,8 +4,10 @@ import { type Ref, onMounted, ref } from 'vue'
 
 export function useVideoControls() {
 	const videoElement = ref<HTMLVideoElement>()
-	const { currentTime, duration, playing, seeking, ignoreCurrentTimeUpdates, ignorePlayingUpdates } = createVideoEventHooks(videoElement)
+	const { currentTime, duration, playing, seeking, ignoreCurrentTimeUpdates }
+    = createVideoEventHooks(videoElement)
 	const { onManualJump, ignoreManualJumpUpdates } = createManualJumpConsumer(currentTime)
+	const { onPlaying, ignorePlayingUpdates } = createPlayingConsumer(playing)
 
 	function findVideoElement() {
 		const video = document.querySelector<HTMLVideoElement>('video')
@@ -28,29 +30,56 @@ export function useVideoControls() {
 		playing,
 		seeking,
 		onManualJump,
+		onPlaying,
 		ignoreManualJumpUpdates,
 		ignoreCurrentTimeUpdates,
 		ignorePlayingUpdates,
 	}
 }
 
-function createManualJumpConsumer(currentTime: Ref<number>): { onManualJump: (consumer: (time: number) => void) => void; ignoreManualJumpUpdates: IgnoredUpdater } {
-	let currentTimeManualJumpConsumer: (time: number) => void = () => { }
+function createManualJumpConsumer(currentTime: Ref<number>): {
+	onManualJump: (consumer: (time: number) => void) => void
+	ignoreManualJumpUpdates: IgnoredUpdater
+} {
+	let currentTimeManualJumpConsumer: (time: number) => void = () => {}
 
 	const onManualJump = (consumer: (time: number) => void) => {
 		currentTimeManualJumpConsumer = consumer
 	}
 
-	const { ignoreUpdates: ignoreManualJumpUpdates } = watchIgnorable(currentTime, (time, prevTime) => {
-		if (Math.abs(time - prevTime) > 1) {
-			consola.debug('Manual jump detected')
-			currentTimeManualJumpConsumer(time)
-		}
-	})
+	const { ignoreUpdates: ignoreManualJumpUpdates } = watchIgnorable(
+		currentTime,
+		(time, prevTime) => {
+			if (Math.abs(time - prevTime) > 1) {
+				consola.debug('Manual jump detected')
+				currentTimeManualJumpConsumer(time)
+			}
+		},
+	)
 
 	return {
 		onManualJump,
 		ignoreManualJumpUpdates,
+	}
+}
+
+function createPlayingConsumer(playing: Ref<boolean>): {
+	onPlaying: (consumer: (isPlaying: boolean) => void) => void
+	ignorePlayingUpdates: IgnoredUpdater
+} {
+	let playingConsumer: (isPlaying: boolean) => void = () => {}
+
+	const onPlaying = (consumer: (isPlaying: boolean) => void) => {
+		playingConsumer = consumer
+	}
+
+	const { ignoreUpdates: ignorePlayingUpdates } = watchIgnorable(playing, (isPlaying) => {
+		playingConsumer(isPlaying)
+	})
+
+	return {
+		onPlaying,
+		ignorePlayingUpdates,
 	}
 }
 
@@ -76,12 +105,14 @@ function createVideoEventHooks(target: Ref<HTMLVideoElement | undefined>) {
 		isPlaying ? el.play() : el.pause()
 	})
 
-	useEventListener(target, 'timeupdate', () => ignoreCurrentTimeUpdates(() => currentTime.value = (toValue(target))!.currentTime))
-	useEventListener(target, 'durationchange', () => duration.value = (toValue(target))!.duration)
-	useEventListener(target, 'pause', () => ignorePlayingUpdates(() => playing.value = false))
-	useEventListener(target, 'play', () => ignorePlayingUpdates(() => playing.value = true))
-	useEventListener(target, 'seeking', () => seeking.value = true)
-	useEventListener(target, 'seeked', () => seeking.value = false)
+	useEventListener(target, 'timeupdate', () =>
+		ignoreCurrentTimeUpdates(() => (currentTime.value = toValue(target)!.currentTime)),
+	)
+	useEventListener(target, 'durationchange', () => (duration.value = toValue(target)!.duration))
+	useEventListener(target, 'pause', () => ignorePlayingUpdates(() => (playing.value = false)))
+	useEventListener(target, 'play', () => ignorePlayingUpdates(() => (playing.value = true)))
+	useEventListener(target, 'seeking', () => (seeking.value = true))
+	useEventListener(target, 'seeked', () => (seeking.value = false))
 
 	return { currentTime, duration, playing, seeking, ignoreCurrentTimeUpdates, ignorePlayingUpdates }
 }

@@ -1,34 +1,50 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
 import { useObservable } from '@vueuse/rxjs'
 import { useToggle } from '@vueuse/core'
 import { computed } from 'vue'
 import ConnectionComponent from './Connection.vue'
-import { useRoomStore } from './RoomStore'
 import { useVideoControls } from './composables/useVideoControls'
 import Copy from '~icons/ic/round-content-copy'
+import type Room from '@/app/comunication/room/domain/Room'
 
-const { currentRoom } = storeToRefs(useRoomStore())
-if (!currentRoom.value)
-	throw new Error('Room not found')
+const { room } = defineProps<{ room: Room }>()
 
-const connections = useObservable(currentRoom.value.peerConnections)
+const connections = useObservable(room.peerConnections)
 
 const hasConnections = computed(() => {
 	return connections.value && connections.value.length > 0
 })
 
-const { duration, currentTime, seeking, onManualJump, ignoreManualJumpUpdates } = useVideoControls()
+const {
+	duration,
+	currentTime,
+	seeking,
+	playing,
+	onManualJump,
+	ignoreManualJumpUpdates,
+	onPlaying,
+	ignorePlayingUpdates,
+} = useVideoControls()
 
+// TODO: move this to a better place such as RoomStore
 onManualJump((time) => {
-	currentRoom.value?.broadcastManualJump(time)
+	room.broadcastManualJump(time)
+})
+onPlaying((value) => {
+	room.broadcastPlaying(value)
 })
 
-currentRoom.value?.onManualJump((time) => {
+room.onManualJump((time) => {
 	ignoreManualJumpUpdates(() => {
 		currentTime.value = time
 	})
 })
+room.onPlaying((value) => {
+	ignorePlayingUpdates(() => {
+		playing.value = value
+	})
+})
+// --
 
 const currentProgress = computed(() => {
 	if (!duration.value || !currentTime.value)
@@ -38,7 +54,7 @@ const currentProgress = computed(() => {
 
 const [copyed, toggleCopyed] = useToggle(false)
 function copy() {
-	navigator.clipboard.writeText(currentRoom.value!.id).then(() => {
+	navigator.clipboard.writeText(room.id).then(() => {
 		toggleCopyed()
 		setTimeout(() => {
 			toggleCopyed()
@@ -51,7 +67,7 @@ function copy() {
   <div class="room">
     <span class="title" :class="{ copyed }">
       <div class="wrapper">
-        {{ currentRoom?.id }}
+        {{ room.id }}
       </div>
       <div title="Copy" class="copy" @click="copy"><Copy /></div>
     </span>
@@ -61,9 +77,6 @@ function copy() {
     </p>
     <div class="progress">
       <div class="bar" :style="`width: ${currentProgress}%;`" />
-    </div>
-    <div>
-      {{ seeking }}
     </div>
     <div v-if="hasConnections" class="connections">
       <ConnectionComponent
@@ -118,5 +131,3 @@ function copy() {
   }
 }
 </style>
-import { useVideoElement } from './useVideoElement' import { useVideoControls } from
-'./composables/useVideoControls' ./composables/useFindVideoElement

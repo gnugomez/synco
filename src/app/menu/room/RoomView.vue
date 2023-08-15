@@ -1,0 +1,14 @@
+<script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import RoomDashboard from './RoomDashboard.vue'
+import { useRoomStore } from './RoomStore'
+import type Room from '@/app/comunication/room/domain/Room'
+
+const { currentRoom } = storeToRefs(useRoomStore())
+</script>
+
+<template>
+  <div v-if="currentRoom">
+    <RoomDashboard :room="currentRoom as Room" />
+  </div>
+</template>

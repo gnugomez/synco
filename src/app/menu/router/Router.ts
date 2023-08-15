@@ -1,7 +1,7 @@
 import { createMemoryHistory, createRouter } from 'vue-router'
 import DefaultView from '../default/Default.vue'
-import RoomView from '../room/Room.vue'
-import JoinView from '../room/Join.vue'
+import RoomView from '../room/RoomView.vue'
+import JoinView from '../room/JoinView.vue'
 import { roomIsUndefined } from './RoomIsUndefined'
 
 const router = createRouter({

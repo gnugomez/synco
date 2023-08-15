@@ -13,6 +13,7 @@ import JoinRoomEvent from './JoinRoomEvent'
 import type RoomEvent from './RoomEvent'
 import { RoomActions } from './RoomActions'
 import VideoManualJumpMessage from './VideoManualJumpMessage'
+import VideoPlayingMessage from './VideoPlayingMessage'
 
 export default class Room {
 	readonly dataStream = new ReplaySubject<PeerMessage<RoomEvent>>()
@@ -46,11 +47,24 @@ export default class Room {
 		this.broadcastMessage(new PeerMessage<RoomEvent>(RoomActions.MANUAL_JUMP, new VideoManualJumpMessage(time)))
 	}
 
+	public broadcastPlaying(playing: boolean) {
+		this.broadcastMessage(new PeerMessage<RoomEvent>(RoomActions.PLAYING, new VideoPlayingMessage(playing)))
+	}
+
 	public onManualJump(consumer: (time: number) => void) {
 		this.dataStream.subscribe((message) => {
 			if (message.action === RoomActions.MANUAL_JUMP) {
 				const payload = message.payload as VideoManualJumpMessage
 				consumer(payload.time)
+			}
+		})
+	}
+
+	public onPlaying(consumer: (playing: boolean) => void) {
+		this.dataStream.subscribe((message) => {
+			if (message.action === RoomActions.PLAYING) {
+				const payload = message.payload as VideoPlayingMessage
+				consumer(payload.isPlaying)
 			}
 		})
 	}
