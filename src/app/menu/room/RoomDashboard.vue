@@ -18,7 +18,6 @@ const hasConnections = computed(() => {
 const {
 	duration,
 	currentTime,
-	seeking,
 	playing,
 	onManualJump,
 	ignoreManualJumpUpdates,
@@ -33,7 +32,6 @@ onManualJump((time) => {
 onPlaying((value) => {
 	room.broadcastPlaying(value)
 })
-
 room.onManualJump((time) => {
 	ignoreManualJumpUpdates(() => {
 		currentTime.value = time
@@ -111,7 +109,7 @@ function copy() {
     }
 
     .copy {
-      @apply h-full w-10 flex justify-center items-center text-base cursor-pointer;
+      @apply h-full w-10 flex justify-center items-center text-base;
       @apply flex-shrink-0;
     }
   }
