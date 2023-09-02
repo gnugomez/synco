@@ -47,24 +47,24 @@ export default class Room {
 		this.broadcastMessage(new PeerMessage<RoomEvent>(RoomActions.MANUAL_JUMP, new VideoManualJumpMessage(time)))
 	}
 
-	public broadcastPlaying(playing: boolean) {
-		this.broadcastMessage(new PeerMessage<RoomEvent>(RoomActions.PLAYING, new VideoPlayingMessage(playing)))
+	public broadcastPlaying(playing: boolean, time: number) {
+		this.broadcastMessage(new PeerMessage<RoomEvent>(RoomActions.PLAYING, new VideoPlayingMessage(playing, time)))
 	}
 
-	public onManualJump(consumer: (time: number) => void) {
+	public onManualJump(consumer: (manualJump: VideoManualJumpMessage) => void) {
 		this.dataStream.subscribe((message) => {
 			if (message.action === RoomActions.MANUAL_JUMP) {
 				const payload = message.payload as VideoManualJumpMessage
-				consumer(payload.time)
+				consumer(payload)
 			}
 		})
 	}
 
-	public onPlaying(consumer: (playing: boolean) => void) {
+	public onPlaying(consumer: (playing: VideoPlayingMessage) => void) {
 		this.dataStream.subscribe((message) => {
 			if (message.action === RoomActions.PLAYING) {
 				const payload = message.payload as VideoPlayingMessage
-				consumer(payload.isPlaying)
+				consumer(payload)
 			}
 		})
 	}

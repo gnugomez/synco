@@ -30,16 +30,19 @@ onManualJump((time) => {
 	room.broadcastManualJump(time)
 })
 onPlaying((value) => {
-	room.broadcastPlaying(value)
+	room.broadcastPlaying(value, currentTime.value)
 })
-room.onManualJump((time) => {
+room.onManualJump((value) => {
 	ignoreManualJumpUpdates(() => {
-		currentTime.value = time
+		currentTime.value = value.time
 	})
 })
 room.onPlaying((value) => {
 	ignorePlayingUpdates(() => {
-		playing.value = value
+		playing.value = value.isPlaying
+	})
+	ignoreManualJumpUpdates(() => {
+		currentTime.value = value.time
 	})
 })
 // --
