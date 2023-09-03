@@ -17,7 +17,7 @@ export default defineConfig({
 		crx({
 			manifest: defineManifest(async () => ({
 				name: 'Sync Video RTC',
-				version: '0.0.0',
+				version: '1.0.0',
 				description: 'Sync Video RTC',
 				manifest_version: 3,
 				background: {

@@ -22,7 +22,7 @@ const {
 	onManualJump,
 	ignoreManualJumpUpdates,
 	onPlaying,
-	ignorePlayingUpdates,
+	ignoreManualPlayingUpdates,
 } = useVideoControls()
 
 // TODO: move this to a better place such as RoomStore
@@ -38,7 +38,7 @@ room.onManualJump((value) => {
 	})
 })
 room.onPlaying((value) => {
-	ignorePlayingUpdates(() => {
+	ignoreManualPlayingUpdates(() => {
 		playing.value = value.isPlaying
 	})
 	ignoreManualJumpUpdates(() => {
