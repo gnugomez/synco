@@ -1,12 +1,14 @@
 import consola from 'consola'
 
-import { createApp } from 'vue'
+import { createApp, h } from 'vue'
 import { createPinia } from 'pinia'
 import mainStyle from '../../assets/main.scss?inline'
 import { WorkerActions } from '../browser/WorkerActions'
 
 import router from './router/Router'
 import App from './App.vue'
+
+const hasStarted = false
 
 if (import.meta.env.DEV)
 	consola.level = Number.POSITIVE_INFINITY
@@ -15,7 +17,10 @@ const { INIT_UI_CONTEXT } = WorkerActions
 
 consola.debug('Vue content script loaded')
 chrome.runtime.onMessage.addListener((request, sender) => {
+	if (hasStarted)
+		return
 	if (request.action === INIT_UI_CONTEXT) {
+		window.postMessage({ action: INIT_UI_CONTEXT }, '*')
 		try {
 			consola.debug('Initiating menu UI: ', sender)
 			const elRoot = document.createElement('div')
@@ -59,6 +64,9 @@ chrome.runtime.onMessage.addListener((request, sender) => {
 			app.use(router)
 
 			app.mount(elApp)
+
+			consola.debug('Menu UI initiated')
+			hasStarted = true
 		}
 		catch (error) {
 			consola.error('There was an error initiating menu UI: ', error)

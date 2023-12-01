@@ -3,7 +3,6 @@ import type Player from '../domain/Player'
 import PlayerInitializationException from '../domain/PlayerInitializationException'
 
 export default class NetflixPlayer implements Player {
-	private videoPlayerAPI?: any
 	private video?: HTMLVideoElement
 
 	initialize(): HTMLVideoElement {
@@ -16,23 +15,30 @@ export default class NetflixPlayer implements Player {
 
 		consola.debug(window)
 
-		const videoPlayers = (window as any).netflix.appContext.state.playerApp.getAPI().videoPlayer
-		this.videoPlayerAPI = videoPlayers.getVideoPlayerBySessionId(videoPlayers.getAllPlayerSessionIds()[0])
-
 		return video as HTMLVideoElement
 	}
 
 	play(): void {
-		this.videoPlayerAPI?.play()
+		const videoIsActive = document.querySelector('.watch-video .active') !== null
+		if (this.video?.paused) {
+			if (videoIsActive) {
+				this.video!.click()
+			}
+			else {
+				this.video!.click()
+				setTimeout(() => {
+					this.video!.click()
+				}
+				, 1000)
+			}
+		}
 	}
 
 	pause(): void {
-		this.videoPlayerAPI?.pause()
+		!this.video?.paused && this.video!.click()
 	}
 
-	seek(time: number): void {
-		this.videoPlayerAPI?.seek(this.getTimeFromEnd(time))
-	}
+	seek(time: number): void {}
 
 	isCurrentPlayer(): boolean {
 		return window.location.hostname.includes('netflix')
