@@ -1,6 +1,6 @@
 import consola from 'consola'
 
-import { createApp, h } from 'vue'
+import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import mainStyle from '../../assets/main.scss?inline'
 import { WorkerActions } from '../browser/WorkerActions'
@@ -8,7 +8,7 @@ import { WorkerActions } from '../browser/WorkerActions'
 import router from './router/Router'
 import App from './App.vue'
 
-const hasStarted = false
+let hasStarted = false
 
 if (import.meta.env.DEV)
 	consola.level = Number.POSITIVE_INFINITY

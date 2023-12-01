@@ -38,7 +38,9 @@ export default class NetflixPlayer implements Player {
 		!this.video?.paused && this.video!.click()
 	}
 
-	seek(time: number): void {}
+	seek(_time: number): void {
+		// not implemented
+	}
 
 	isCurrentPlayer(): boolean {
 		return window.location.hostname.includes('netflix')
