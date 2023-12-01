@@ -1,15 +1,13 @@
 name: Build and Test
 
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
   pull_request:
     branches:
       - main
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,3 +32,9 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Output artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist/
