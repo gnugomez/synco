@@ -9,7 +9,7 @@ jobs:
   build:
     uses: ./.github/workflows/build.yml
 
-  pack-and-publish:
+  pack:
     needs: build
     runs-on: ubuntu-latest
 
@@ -17,7 +17,7 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
-          name: dist 
+          name: dist
           path: dist/
 
       - name: Install Node.js
@@ -35,8 +35,27 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: sync-video-rtc
-          path: sync-video-rtc.crx
-      
+          path: ./sync-video-rtc.crx
+
+  relsease:
+    needs: pack
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: sync-video-rtc
+
+      - name: Delete old latest release
+        run: |
+          RELEASE_ID=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/latest" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" | jq '.id')
+          if [ "$RELEASE_ID" != "null" ]; then
+            curl -X DELETE "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"
+          fi
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -49,7 +68,7 @@ jobs:
           prerelease: true
 
       - name: Upload Release Asset
-        id: upload-release-asset 
+        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -58,4 +77,3 @@ jobs:
           asset_path: ./sync-video-rtc.crx
           asset_name: sync-video-rtc.crx
           asset_content_type: application/x-chrome-extension
-
