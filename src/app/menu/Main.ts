@@ -24,10 +24,10 @@ chrome.runtime.onMessage.addListener((request, sender) => {
 		try {
 			consola.debug('Initiating menu UI: ', sender)
 			const elRoot = document.createElement('div')
-			elRoot.id = 'sync-video-rtc-root'
+			elRoot.id = 'synco-root'
 
 			const elApp = document.createElement('div')
-			elApp.id = 'sync-video-rtc-app'
+			elApp.id = 'synco-app'
 
 			// create a shadow root to encapsulate styles
 

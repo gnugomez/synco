@@ -37,7 +37,7 @@ export default class PeerConnectionWebRTC implements PeerConnection {
 		consola.debug('Initializing peer to peer connection')
 		this.peerConnection = new RTCPeerConnection(this.config)
 		if (!this.polite) {
-			this.dataChannel = this.peerConnection.createDataChannel('sync-video-rtc')
+			this.dataChannel = this.peerConnection.createDataChannel('synco')
 			fromEvent<MessageEvent<string>>(this.dataChannel, 'message')
 				.pipe(
 					map(ev => JSON.parse(ev.data) as PeerMessage<RoomEvent>),

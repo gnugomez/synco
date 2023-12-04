@@ -34,8 +34,8 @@ jobs:
       - name: Publish Extension
         uses: actions/upload-artifact@v2
         with:
-          name: sync-video-rtc
-          path: ./sync-video-rtc.crx
+          name: synco
+          path: ./synco.crx
 
   relsease:
     needs: pack
@@ -45,7 +45,7 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
-          name: sync-video-rtc
+          name: synco
 
       - name: Delete old latest release
         run: |
@@ -62,7 +62,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: latest-${{ github.sha }}
+          tag_name: latest
           release_name: latest
           draft: false
           prerelease: true
@@ -74,6 +74,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./sync-video-rtc.crx
-          asset_name: sync-video-rtc.crx
+          asset_path: ./synco.crx
+          asset_name: synco.crx
           asset_content_type: application/x-chrome-extension

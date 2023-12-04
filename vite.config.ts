@@ -15,9 +15,9 @@ export default defineConfig({
 		}),
 		crx({
 			manifest: defineManifest(async () => ({
-				name: 'Sync Video RTC',
+				name: 'synco',
 				version: '1.0.0',
-				description: 'Sync Video RTC',
+				description: 'synco',
 				manifest_version: 3,
 				background: {
 					service_worker: 'src/app/browser/Worker.ts',
@@ -30,7 +30,7 @@ export default defineConfig({
 					},
 				],
 				action: {
-					default_title: 'Sync Video RTC',
+					default_title: 'synco',
 				},
 				permissions: ['storage', 'activeTab', 'scripting'],
 			})),
