@@ -1,0 +1,36 @@
+name: Pack chrome extension
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+
+  pack:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist/
+
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Install npm crx
+        run: npm install -g crx
+
+      - name: Create Extension
+        run: crx pack dist/
+
+      - name: Publish Extension
+        uses: actions/upload-artifact@v2
+        with:
+          name: synco
+          path: ./synco.crx
