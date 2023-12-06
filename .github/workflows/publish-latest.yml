@@ -6,42 +6,17 @@ on:
       - main
 
 jobs:
-  build:
-    uses: ./.github/workflows/build.yml
-
   pack:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: dist
-          path: dist/
-
-      - name: Install Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16
-
-      - name: Install npm crx
-        run: npm install -g crx
-
-      - name: Create Extension
-        run: crx pack dist/
-
-      - name: Publish Extension
-        uses: actions/upload-artifact@v2
-        with:
-          name: synco
-          path: ./synco.crx
+    uses: ./.github/workflows/pack.yml
 
   relsease:
     needs: pack
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
@@ -53,6 +28,15 @@ jobs:
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" | jq '.id')
           if [ "$RELEASE_ID" != "null" ]; then
             curl -X DELETE "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"
+          fi
+
+      - name: Delete old latest tag
+        run: |
+          TAG_ID=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/git/refs/tags/latest" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" | jq '.id')
+          if [ "$TAG_ID" != "null" ]; then
+            curl -X DELETE "https://api.github.com/repos/$GITHUB_REPOSITORY/git/refs/tags/latest" \
               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"
           fi
 
