@@ -1,4 +1,4 @@
-name: Publish Workflow
+name: Publish latest release
 
 on:
   push:
