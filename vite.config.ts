@@ -16,7 +16,7 @@ export default defineConfig({
 		crx({
 			manifest: defineManifest(async () => ({
 				name: 'synco',
-				version: '1.0.0',
+				version: JSON.stringify(process.env.npm_package_version),
 				description: 'synco',
 				manifest_version: 3,
 				background: {
