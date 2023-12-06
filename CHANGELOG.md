@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/gnugomez/synco/compare/v1.0.0...v1.0.1) (2023-12-06)
+
+
+### Bug Fixes
+
+* **release:** add crx artifact on release ([c916ab2](https://github.com/gnugomez/synco/commit/c916ab27cea0710e1875e872a6ab856827b35cd3))
+
 ## 1.0.0 (2023-12-06)
 
 
