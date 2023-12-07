@@ -5,6 +5,7 @@ import { crx, defineManifest } from '@crxjs/vite-plugin'
 import icons from 'unplugin-icons/vite'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 
+const version = process.env.npm_package_version || '0.0.0'
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
@@ -16,7 +17,7 @@ export default defineConfig({
 		crx({
 			manifest: defineManifest(async () => ({
 				name: 'synco',
-				version: JSON.stringify(process.env.npm_package_version),
+				version,
 				description: 'synco',
 				manifest_version: 3,
 				background: {
