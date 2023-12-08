@@ -1,6 +1,19 @@
-# synco
+# ✋ synco
 
-This template should help get you started developing with Vue 3 in Vite.
+This repository contains the source code of "synco" a chrome extension that lets you sync videos with your colleagues seamlessly with low latency using peer to peer connections with webRTC.
+
+Is proudly made with [Vite](https://vitejs.dev/), [Vue 3](https://v3.vuejs.org/), [TypeScript](https://www.typescriptlang.org/), [Tailwind CSS](https://tailwindcss.com/)
+
+## Features
+- Multiple users per room (using peer to peer connections)
+- Low latency commands (play, pause, seek) depending on the network conditions
+- Lauch the extension from any website that contaians a video. ___Some websites are not supported yet such as netflix that blocks any extension that tries to interact with their video player.___
+
+## Things to improve
+- [ ] This extension works completely peer to peer, however it needs to do a handshake with a server in order to know the other peers in the room. This handshake is done using firebase that is not ideal as it is a third party service. ___This can be improved by using a custom server that does the handshake and then the peers can communicate directly with each other.___
+- [ ] Tranform this into a monorepo to separate the extension from the core that uses webRTC to sync the videos.
+- [ ] Add a way to create a room with a custom name ___this indeed is actually possible, you just only need to join a room that doesn't exist yet.___
+- [ ] Add a way to share the room link with your colleagues without having to remove the current room id funcionaity as may be used as well.
 
 ## Recommended IDE Setup
 
