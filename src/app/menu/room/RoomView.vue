@@ -8,7 +8,5 @@ const { currentRoom } = storeToRefs(useRoomStore())
 </script>
 
 <template>
-  <div v-if="currentRoom">
-    <RoomDashboard :room="currentRoom as Room" />
-  </div>
+  <RoomDashboard v-if="currentRoom" :room="currentRoom as Room" />
 </template>

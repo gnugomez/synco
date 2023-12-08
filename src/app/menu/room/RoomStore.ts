@@ -28,9 +28,15 @@ export const useRoomStore = defineStore('room', () => {
 		return createRoom(`room-${generateRandomStringSecuence()}`)
 	}
 
+	const leaveRoom = () => {
+		currentRoom.value = undefined
+		push({ name: 'default' })
+	}
+
 	return {
 		createRandomRoom,
 		createRoom,
+		leaveRoom,
 		currentRoom,
 	}
 })

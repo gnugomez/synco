@@ -4,10 +4,14 @@ import { useToggle } from '@vueuse/core'
 import { computed } from 'vue'
 import ConnectionComponent from './Connection.vue'
 import { useVideoControls } from './composables/useVideoControls'
+import { useRoomStore } from './RoomStore'
 import Copy from '~icons/ic/round-content-copy'
+import Leave from '~icons/ic/round-logout'
 import type Room from '@/app/comunication/room/domain/Room'
 
 const { room } = defineProps<{ room: Room }>()
+
+const { leaveRoom } = useRoomStore()
 
 const connections = useObservable(room.peerConnections)
 
@@ -66,12 +70,15 @@ function copy() {
 
 <template>
   <div class="room">
-    <span class="title" :class="{ copyed }">
-      <div class="wrapper">
-        {{ room.id }}
-      </div>
-      <div title="Copy" class="copy" @click="copy"><Copy /></div>
-    </span>
+    <div class="header-wrapper">
+      <span class="title" :class="{ copyed }">
+        <div class="wrapper">
+          {{ room.id }}
+        </div>
+        <div title="Copy" class="copy" @click="copy"><Copy /></div>
+      </span>
+      <span class="leave" title="Leave room" @click="leaveRoom"><Leave /></span>
+    </div>
     <p class="text-white/60 text-sm italic">
       Eureka! you have successfully joined a room, just share the room code with your friends!
       Remember, they should also have this extension installed.
@@ -93,10 +100,15 @@ function copy() {
 .room {
   @apply grid gap-5 w-full;
 
+  .header-wrapper {
+    @apply flex gap-2;
+  }
+
   .title {
     @apply border border-gray-500 text-sm rounded-md font-semibold bg-gray-500/50 overflow-hidden;
     @apply flex justify-between items-center min-w-0;
     @apply transition-all duration-300;
+    @apply flex-1;
 
     .wrapper {
       @apply flex-1;
@@ -114,6 +126,18 @@ function copy() {
     .copy {
       @apply h-full w-10 flex justify-center items-center text-base;
       @apply flex-shrink-0;
+    }
+  }
+
+  .leave {
+    @apply h-full aspect-1 rounded-md border border-gray-500 bg-gray-500/50 text-sm font-semibold;
+    @apply grid place-items-center;
+    @apply cursor-default;
+    @apply transition-all duration-300;
+
+    &:hover {
+      @apply border-red-500 bg-red-500/50 text-red-100;
+      @apply shadow-xl shadow-red-500/40;
     }
   }
 
