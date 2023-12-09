@@ -75,7 +75,7 @@ watch([x, y], ([x, y], [oldX, oldY]) => {
     @apply w-96 bg-gray-950/75 backdrop-blur-lg backdrop-saturate-200 border-2 border-white/10 rounded-2xl shadow-lg;
     @apply p-5;
     @apply grid place-items-center;
-    @apply transition-all duration-500;
+    @apply transition-all duration-500 overflow-hidden;
   }
 
   .arrow.close {

@@ -44,7 +44,7 @@ const isYellow = computed(() => {
     @apply bg-gray-500/40 rounded-md;
   }
   .label {
-    @apply w-3 h-3 rounded-full;
+    @apply w-2 h-2 rounded-full mb-auto;
 
     &.green {
       @apply bg-green-500;

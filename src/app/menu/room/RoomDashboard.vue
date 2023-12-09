@@ -79,7 +79,7 @@ function copy() {
       </span>
       <span class="leave" title="Leave room" @click="leaveRoom"><Leave /></span>
     </div>
-    <p class="text-white/60 text-sm italic">
+    <p v-if="!hasConnections" class="text-white/60 text-sm italic">
       Eureka! you have successfully joined a room, just share the room code with your friends!
       Remember, they should also have this extension installed.
     </p>
@@ -87,11 +87,17 @@ function copy() {
       <div class="bar" :style="`width: ${currentProgress}%;`" />
     </div>
     <div v-if="hasConnections" class="connections">
-      <ConnectionComponent
-        v-for="connection in connections"
-        :key="connection.selfIdentifier.id"
-        :connection="connection"
-      />
+      <span class="label">Connections</span>
+      <div class="connections-grid">
+        <ConnectionComponent
+          v-for="connection in connections"
+          :key="connection.selfIdentifier.id"
+          :connection="connection"
+        />
+      </div>
+    </div>
+    <div class="progress">
+      <div class="bar" :style="`width: ${currentProgress}%;`" />
     </div>
   </div>
 </template>
@@ -101,7 +107,11 @@ function copy() {
   @apply grid gap-5 w-full;
 
   .header-wrapper {
-    @apply flex gap-2;
+    @apply flex gap-2 min-w-0;
+  }
+
+  .label {
+    @apply text-sm font-semibold text-gray-500;
   }
 
   .title {
@@ -137,13 +147,13 @@ function copy() {
 
     &:hover {
       @apply border-red-500 bg-red-500/50 text-red-100;
-      @apply shadow-xl shadow-red-500/40;
+      @apply shadow-xl shadow-red-500/30;
     }
   }
 
   .progress {
-    @apply h-1 w-full bg-gray-500/50 rounded-md overflow-hidden;
-    @apply relative;
+    @apply h-1 w-full bg-gray-500/50 overflow-hidden;
+    @apply absolute bottom-0 inset-x-0;
 
     .bar {
       @apply h-full bg-white/80 absolute top-0 left-0;
@@ -151,8 +161,12 @@ function copy() {
     }
   }
 
-  .connections {
+  .connections-grid {
     @apply grid gap-3 grid-cols-3;
+  }
+
+  .connections {
+    @apply flex flex-col gap-2;
   }
 }
 </style>
