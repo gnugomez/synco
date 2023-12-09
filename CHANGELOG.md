@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/gnugomez/synco/compare/v1.0.2...v1.1.0) (2023-12-09)
+
+
+### Features
+
+* adding leave room button ([9c11f75](https://github.com/gnugomez/synco/commit/9c11f7563088a3861cded5aa7ec8c084388f0e57))
+* restructuring connections component ([253d22e](https://github.com/gnugomez/synco/commit/253d22e9deadde1f727b7f29ff759fafde983890))
+
+
+### Bug Fixes
+
+* manifest being malformed due to JSON.stringify from version ([7cc453e](https://github.com/gnugomez/synco/commit/7cc453e49db41b4c7c434c89f42dd17023963ee5))
+
 ## [1.0.2](https://github.com/gnugomez/synco/compare/v1.0.1...v1.0.2) (2023-12-06)
 
 
