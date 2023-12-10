@@ -20,6 +20,11 @@ export default defineConfig({
 				version,
 				description: 'synco',
 				manifest_version: 3,
+				icons: {
+					16: 'icons/16.png',
+					48: 'icons/48.png',
+					128: 'icons/128.png',
+				},
 				background: {
 					service_worker: 'src/app/browser/Worker.ts',
 					type: 'module',
