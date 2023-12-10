@@ -38,7 +38,6 @@ export default defineConfig({
 				action: {
 					default_title: 'synco',
 				},
-				permissions: ['storage', 'activeTab', 'scripting'],
 			})),
 		}),
 	],
