@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/gnugomez/synco/compare/v1.2.0...v1.2.1) (2023-12-10)
+
+
+### Bug Fixes
+
+* **crx:** removing unnecessary manifest permissions ([d03a0f7](https://github.com/gnugomez/synco/commit/d03a0f77d940bfcd5d604b6a277490bddf253d7f))
+
 ## [1.2.0](https://github.com/gnugomez/synco/compare/v1.1.0...v1.2.0) (2023-12-10)
 
 
