@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/gnugomez/synco/compare/v1.1.0...v1.2.0) (2023-12-10)
+
+
+### Features
+
+* **crx:** adding chrome extension icons ([374aa25](https://github.com/gnugomez/synco/commit/374aa25b988170882d7d0a1ff5cd16e9307894b3))
+
 ## [1.1.0](https://github.com/gnugomez/synco/compare/v1.0.2...v1.1.0) (2023-12-09)
 
 
