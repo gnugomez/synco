@@ -5,14 +5,16 @@ This repository contains the source code of "synco" a chrome extension that lets
 Is proudly made with [Vite](https://vitejs.dev/), [Vue 3](https://v3.vuejs.org/), [TypeScript](https://www.typescriptlang.org/), [Tailwind CSS](https://tailwindcss.com/)
 
 ## Features
+
 - Multiple users per room (using peer to peer connections)
 - Low latency commands (play, pause, seek) depending on the network conditions
-- Lauch the extension from any website that contaians a video. ___Some websites are not supported yet such as netflix that blocks any extension that tries to interact with their video player.___
+- Lauch the extension from any website that contaians a video. **_Some websites are not supported yet such as netflix that blocks any extension that tries to interact with their video player._**
 
 ## Things to improve
-- [ ] This extension works completely peer to peer, however it needs to do a handshake with a server in order to know the other peers in the room. This handshake is done using firebase that is not ideal as it is a third party service. ___This can be improved by using a custom server that does the handshake and then the peers can communicate directly with each other.___
+
+- [ ] This extension works completely peer to peer, however it needs to do a handshake with a server in order to know the other peers in the room. This handshake is done using firebase that is not ideal as it is a third party service. **_This can be improved by using a custom server that does the handshake and then the peers can communicate directly with each other._**
 - [ ] Tranform this into a monorepo to separate the extension from the core that uses webRTC to sync the videos.
-- [ ] Add a way to create a room with a custom name ___this indeed is actually possible, you just only need to join a room that doesn't exist yet.___
+- [ ] Add a way to create a room with a custom name **_this indeed is actually possible, you just only need to join a room that doesn't exist yet._**
 - [ ] Add a way to share the room link with your colleagues without having to remove the current room id funcionaity as may be used as well.
 
 ## Recommended IDE Setup
@@ -26,8 +28,8 @@ TypeScript cannot handle type information for `.vue` imports by default, so we r
 If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
 
 1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
+   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
+   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
 2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
 
 ## Customize configuration

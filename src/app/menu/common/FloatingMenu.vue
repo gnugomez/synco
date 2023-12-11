@@ -15,12 +15,12 @@ const [closed, toggleClose] = useToggle(false)
 const { x, y } = usePointer()
 const isPointerActive = ref(false)
 watch([x, y], ([x, y], [oldX, oldY]) => {
-	if (!isPointerActive.value && (x !== oldX || y !== oldY)) {
-		isPointerActive.value = true
-		setTimeout(() => {
-			isPointerActive.value = false
-		}, 5000)
-	}
+  if (!isPointerActive.value && (x !== oldX || y !== oldY)) {
+    isPointerActive.value = true
+    setTimeout(() => {
+      isPointerActive.value = false
+    }, 5000)
+  }
 })
 </script>
 

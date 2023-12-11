@@ -1,7 +1,5 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "public/background.ts"],
-  "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
     "composite": true,
     "baseUrl": ".",
@@ -10,4 +8,6 @@
     },
     "types": ["chrome", "unplugin-icons/types/vue"]
   },
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "public/background.ts"],
+  "exclude": ["src/**/__tests__/*"]
 }
