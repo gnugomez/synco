@@ -16,55 +16,55 @@ const { leaveRoom } = useRoomStore()
 const connections = useObservable(room.peerConnections)
 
 const hasConnections = computed(() => {
-	return connections.value && connections.value.length > 0
+  return connections.value && connections.value.length > 0
 })
 
 const {
-	duration,
-	currentTime,
-	playing,
-	onManualJump,
-	ignoreManualJumpUpdates,
-	onPlaying,
-	ignoreManualPlayingUpdates,
+  duration,
+  currentTime,
+  playing,
+  onManualJump,
+  ignoreManualJumpUpdates,
+  onPlaying,
+  ignoreManualPlayingUpdates,
 } = useVideoControls()
 
 // TODO: move this to a better place such as RoomStore
 onManualJump((time) => {
-	room.broadcastManualJump(time)
+  room.broadcastManualJump(time)
 })
 onPlaying((value) => {
-	room.broadcastPlaying(value, currentTime.value)
+  room.broadcastPlaying(value, currentTime.value)
 })
 room.onManualJump((value) => {
-	ignoreManualJumpUpdates(() => {
-		currentTime.value = value.time
-	})
+  ignoreManualJumpUpdates(() => {
+    currentTime.value = value.time
+  })
 })
 room.onPlaying((value) => {
-	ignoreManualPlayingUpdates(() => {
-		playing.value = value.isPlaying
-	})
-	ignoreManualJumpUpdates(() => {
-		currentTime.value = value.time
-	})
+  ignoreManualPlayingUpdates(() => {
+    playing.value = value.isPlaying
+  })
+  ignoreManualJumpUpdates(() => {
+    currentTime.value = value.time
+  })
 })
 // --
 
 const currentProgress = computed(() => {
-	if (!duration.value || !currentTime.value)
-		return 0
-	return (currentTime.value / duration.value) * 100
+  if (!duration.value || !currentTime.value)
+    return 0
+  return (currentTime.value / duration.value) * 100
 })
 
 const [copyed, toggleCopyed] = useToggle(false)
 function copy() {
-	navigator.clipboard.writeText(room.id).then(() => {
-		toggleCopyed()
-		setTimeout(() => {
-			toggleCopyed()
-		}, 1000)
-	})
+  navigator.clipboard.writeText(room.id).then(() => {
+    toggleCopyed()
+    setTimeout(() => {
+      toggleCopyed()
+    }, 1000)
+  })
 }
 </script>
 

@@ -11,65 +11,65 @@ import App from './App.vue'
 let hasStarted = false
 
 if (import.meta.env.DEV)
-	consola.level = Number.POSITIVE_INFINITY
+  consola.level = Number.POSITIVE_INFINITY
 
 const { INIT_UI_CONTEXT } = WorkerActions
 
 consola.debug('Vue content script loaded')
 chrome.runtime.onMessage.addListener((request, sender) => {
-	if (hasStarted)
-		return
-	if (request.action === INIT_UI_CONTEXT) {
-		window.postMessage({ action: INIT_UI_CONTEXT }, '*')
-		try {
-			consola.debug('Initiating menu UI: ', sender)
-			const elRoot = document.createElement('div')
-			elRoot.id = 'synco-root'
+  if (hasStarted)
+    return
+  if (request.action === INIT_UI_CONTEXT) {
+    window.postMessage({ action: INIT_UI_CONTEXT }, '*')
+    try {
+      consola.debug('Initiating menu UI: ', sender)
+      const elRoot = document.createElement('div')
+      elRoot.id = 'synco-root'
 
-			const elApp = document.createElement('div')
-			elApp.id = 'synco-app'
+      const elApp = document.createElement('div')
+      elApp.id = 'synco-app'
 
-			// create a shadow root to encapsulate styles
+      // create a shadow root to encapsulate styles
 
-			const shadowRoot = elRoot.attachShadow({ mode: 'open' })
-			shadowRoot.appendChild(elApp)
+      const shadowRoot = elRoot.attachShadow({ mode: 'open' })
+      shadowRoot.appendChild(elApp)
 
-			document.body.appendChild(elRoot)
+      document.body.appendChild(elRoot)
 
-			// move the head styles to the shadow root
+      // move the head styles to the shadow root
 
-			let stylesSelector = 'style#sync-vide-rtc-styles'
+      let stylesSelector = 'style#sync-vide-rtc-styles'
 
-			if (import.meta.env.DEV)
-				stylesSelector = 'style[data-vite-dev-id]'
+      if (import.meta.env.DEV)
+        stylesSelector = 'style[data-vite-dev-id]'
 
-			const existingStyles = document.querySelectorAll(stylesSelector)
+      const existingStyles = document.querySelectorAll(stylesSelector)
 
-			const styles = Array.from(existingStyles).concat(
-				Array.of(mainStyle).map((style) => {
-					const elStyle = document.createElement('style')
-					elStyle.textContent = style
-					shadowRoot.appendChild(elStyle)
-					return elStyle
-				}),
-			)
+      const styles = Array.from(existingStyles).concat(
+        Array.of(mainStyle).map((style) => {
+          const elStyle = document.createElement('style')
+          elStyle.textContent = style
+          shadowRoot.appendChild(elStyle)
+          return elStyle
+        }),
+      )
 
-			styles.forEach((style) => {
-				shadowRoot.appendChild(style)
-			})
+      styles.forEach((style) => {
+        shadowRoot.appendChild(style)
+      })
 
-			const app = createApp(App)
+      const app = createApp(App)
 
-			app.use(createPinia())
-			app.use(router)
+      app.use(createPinia())
+      app.use(router)
 
-			app.mount(elApp)
+      app.mount(elApp)
 
-			consola.debug('Menu UI initiated')
-			hasStarted = true
-		}
-		catch (error) {
-			consola.error('There was an error initiating menu UI: ', error)
-		}
-	}
+      consola.debug('Menu UI initiated')
+      hasStarted = true
+    }
+    catch (error) {
+      consola.error('There was an error initiating menu UI: ', error)
+    }
+  }
 })

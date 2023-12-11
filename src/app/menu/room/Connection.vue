@@ -9,17 +9,17 @@ const state = useObservable(props.connection.connectionState)
 const signalingState = useObservable(props.connection.signalingState)
 
 const isGreen = computed(() => {
-	return PeerConnectionState.CONNECTED === state.value
+  return PeerConnectionState.CONNECTED === state.value
 })
 const isRed = computed(() => {
-	return (
-		PeerConnectionState.DISCONNECTED === state.value
+  return (
+    PeerConnectionState.DISCONNECTED === state.value
     || PeerConnectionState.FAILED === state.value
     || PeerConnectionState.CLOSED === state.value
-	)
+  )
 })
 const isYellow = computed(() => {
-	return !isGreen.value && !isRed.value
+  return !isGreen.value && !isRed.value
 })
 </script>
 

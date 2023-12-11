@@ -2,30 +2,30 @@ import type Player from '../domain/Player'
 import PlayerInitializationException from '../domain/PlayerInitializationException'
 
 export default class VideoElementPlayer implements Player {
-	private video?: HTMLVideoElement
+  private video?: HTMLVideoElement
 
-	initialize(): HTMLVideoElement {
-		const video = document.querySelector<HTMLVideoElement>('video')
-		if (!video)
-			throw new PlayerInitializationException('Video element not found')
+  initialize(): HTMLVideoElement {
+    const video = document.querySelector<HTMLVideoElement>('video')
+    if (!video)
+      throw new PlayerInitializationException('Video element not found')
 
-		this.video = video as HTMLVideoElement
-		return video as HTMLVideoElement
-	}
+    this.video = video as HTMLVideoElement
+    return video as HTMLVideoElement
+  }
 
-	play(): void {
-		this.video?.play()
-	}
+  play(): void {
+    this.video?.play()
+  }
 
-	pause(): void {
-		this.video?.pause()
-	}
+  pause(): void {
+    this.video?.pause()
+  }
 
-	seek(time: number): void {
-		this.video!.currentTime = time
-	}
+  seek(time: number): void {
+    this.video!.currentTime = time
+  }
 
-	isCurrentPlayer(): boolean {
-		return false
-	}
+  isCurrentPlayer(): boolean {
+    return false
+  }
 }

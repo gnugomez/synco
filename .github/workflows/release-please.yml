@@ -36,4 +36,3 @@ jobs:
           asset_path: ./synco.crx
           asset_name: synco.crx
           asset_content_type: application/x-chrome-extension
-        

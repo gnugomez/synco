@@ -6,12 +6,12 @@ const { createRoom } = useRoomStore()
 const roomName = ref()
 
 const isNameValid = computed(() => {
-	return roomName.value?.length > 0
+  return roomName.value?.length > 0
 })
 
 function join() {
-	if (isNameValid.value)
-		createRoom(roomName.value)
+  if (isNameValid.value)
+    createRoom(roomName.value)
 }
 </script>
 
