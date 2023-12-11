@@ -2,12 +2,12 @@
 import { useObservable } from '@vueuse/rxjs'
 import { useToggle } from '@vueuse/core'
 import { computed } from 'vue'
+import type { Room } from '@gnugomez/synco-room'
 import ConnectionComponent from './Connection.vue'
 import { useVideoControls } from './composables/useVideoControls'
 import { useRoomStore } from './RoomStore'
 import Copy from '~icons/ic/round-content-copy'
 import Leave from '~icons/ic/round-logout'
-import type Room from '@/app/comunication/room/domain/Room'
 
 const { room } = defineProps<{ room: Room }>()
 

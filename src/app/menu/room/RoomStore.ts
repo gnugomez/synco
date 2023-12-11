@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import { consola } from 'consola'
 import { useRouter } from 'vue-router'
-import type Room from '@/app/comunication/room/domain/Room'
+import type { Room } from '@gnugomez/synco-room'
 import { roomFactory } from '@/app/comunication/context/Context'
 
 export const useRoomStore = defineStore('room', () => {

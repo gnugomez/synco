@@ -1,15 +1,8 @@
-import type PeerFactory from '../peer/application/PeerFactory'
-import WebRTCPeerFactory from '../peer/infrastructure/RTCPeerFactory'
-import RoomFactory from '../room/application/RoomFactory'
-import type SignalingChannelFactory from '../signaling/application/SignalingChannelFactory'
-import FirebaseSignalingChannelFactory from '../signaling/infrastructure/FirebaseSignalingChannelFactory'
+import type { PeerFactory, SignalingChannelFactory } from '@gnugomez/synco-room'
+import { FirebaseSignalingChannelFactory, RoomFactory, WebRtcPeerFactory } from '@gnugomez/synco-room'
 
-const signalingChannelFactory: SignalingChannelFactory
-		= new FirebaseSignalingChannelFactory()
+const signalingChannelFactory: SignalingChannelFactory = new FirebaseSignalingChannelFactory()
 
-const peerFactory: PeerFactory = new WebRTCPeerFactory()
+const peerFactory: PeerFactory = new WebRtcPeerFactory()
 
-export const roomFactory: RoomFactory = new RoomFactory(
-	peerFactory,
-	signalingChannelFactory,
-)
+export const roomFactory: RoomFactory = new RoomFactory(peerFactory, signalingChannelFactory)

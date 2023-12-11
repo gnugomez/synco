@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { useObservable } from '@vueuse/rxjs'
+import { type PeerConnection, PeerConnectionState } from '@gnugomez/synco-room'
 import { computed } from 'vue'
-import type PeerConnection from '../../comunication/peer/domain/PeerConnection'
-import { PeerConnectionState } from '@/app/comunication/peer/domain/PeerConnectionState'
 
 const props = defineProps<{ connection: PeerConnection }>()
 
