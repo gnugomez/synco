@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/gnugomez/synco/compare/v1.2.1...v1.3.0) (2023-12-12)
+
+
+### Features
+
+* replacing synco-room as a separate package ([6ecc819](https://github.com/gnugomez/synco/commit/6ecc81961dcb5585a368a4e04ead5d31f1d2875c))
+
 ## [1.2.1](https://github.com/gnugomez/synco/compare/v1.2.0...v1.2.1) (2023-12-10)
 
 
