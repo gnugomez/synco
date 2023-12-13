@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/gnugomez/synco/compare/v1.3.0...v1.3.1) (2023-12-13)
+
+
+### Bug Fixes
+
+* updating icons ([e9946ed](https://github.com/gnugomez/synco/commit/e9946ed1b4a638cf2b8e54215af09a7b0080e440))
+
 ## [1.3.0](https://github.com/gnugomez/synco/compare/v1.2.1...v1.3.0) (2023-12-12)
 
 
